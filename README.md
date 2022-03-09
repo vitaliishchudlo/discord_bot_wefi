@@ -1,1 +1,1 @@
-# we-fi_discord_bot
+Discord bot for Western Fighters discord server.
