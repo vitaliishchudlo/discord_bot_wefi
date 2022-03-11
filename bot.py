@@ -1,4 +1,4 @@
-import config
+from data import config
 
 from handlers import bot
 
