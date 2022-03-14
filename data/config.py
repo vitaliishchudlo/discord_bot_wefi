@@ -12,6 +12,10 @@ load_dotenv(PATH_ENV_FILE)
 
 BOT_TOKEN = str(os.getenv("BOT_TOKEN"))
 
+# ID_OWNER = 398567252061978628
+# ID_ROLE_ADMIN =
+# ID_ROLE_MODERATOR =
+
 OWNER_ID = str(os.getenv("OWNER_ID"))
 ADMIN_ROLE = str(os.getenv("ADMIN_ROLE"))
 MODERATOR_ROLE = str(os.getenv("MODERATOR_ROLE"))
