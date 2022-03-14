@@ -1,8 +1,7 @@
 from discord.ext import commands
-
+from discord import Game, Activity, ActivityType, Streaming
 from data import config
 from discord_bot_wefi.database.db import Database
-
 
 class OnReady(commands.Cog):
     def __init__(self, bot):
@@ -39,6 +38,8 @@ class OnReady(commands.Cog):
             exit('Something happen with DataBase')
         print(f'{len(users)} users have been added to the DB')
         print('\nStarting Bot...SUCCESS\n\n')
+        await self.bot.change_presence(activity=Game('Beta version 1.0'))
+
 
 
 def setup(bot):
