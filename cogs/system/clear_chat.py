@@ -11,7 +11,7 @@ class ClearChat(commands.Cog):
         self.bot = bot
 
     @commands.command()
-    @has_any_role('💚𝐖𝐞𝐅𝐢💚', config.MODERATOR_ROLE)
+    @has_any_role(config.ACHIVEMENT_ROLE_NAME, config.MODERATOR_ROLE)
     async def clear(self, ctx, amount=1):
         defended_chats = config.DEFENDED_CHATS
         if not bool(ctx.channel.name in defended_chats):
