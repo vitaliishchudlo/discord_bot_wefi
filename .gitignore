@@ -132,4 +132,7 @@ dmypy.json
 tasks.txt
 test.py
 
+captchas/
+
 .env
+database/database.db
