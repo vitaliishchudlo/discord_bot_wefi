@@ -63,3 +63,9 @@ class Database:
         self.cur.execute(sql, val)
         self.conn.commit()
         self.conn.close()
+
+    def get_captcha_text(self, discord_id):
+        sql = 'SELECT captcha FROM registration_users WHERE discord_id=?'
+        val = (discord_id,)
+        self.cur.execute(sql, val)
+        return self.cur.fetchone()[0]
