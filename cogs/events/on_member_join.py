@@ -6,8 +6,8 @@ from discord import File
 from discord.ext import commands
 
 from data import config
+from database.db import Database
 
-import asyncio
 
 def generate_captcha_text():
     global captcha_body
@@ -37,10 +37,17 @@ class Member(commands.Cog):
         file_name = f'captchas/{member.id}.png'
         image.write(captcha_text, file_name)
         picture = File(open(file_name, 'rb'))
-        await welcome_channel.send(f'👋 Hello, {member.mention}. Welcome to the We-Fi server!\n'
-                                   f'You need to register. Please, enter - the **/register** __captcha__',
-                                   file=picture)
-        await asyncio.sleep(60)
+        Database().register_user(
+            discord_id=member.id,
+            user_name=member.name,
+            captcha_text=captcha_text.lower()
+        )
+        await welcome_channel.send(
+            f'👋 Hello, {member.mention}. Welcome to the We-Fi server!\n'
+            f'You need to register. '
+            f'Please, enter:  **{config.BOT_PREFIX}register** __captcha__',
+            file=picture)
+
 
 def setup(bot):
     bot.add_cog(Member(bot))

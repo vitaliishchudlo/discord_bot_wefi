@@ -12,7 +12,7 @@ load_dotenv(PATH_ENV_FILE)
 
 BOT_TOKEN = str(os.getenv('BOT_TOKEN'))
 
-BOT_PREFIX = ''
+BOT_PREFIX = '.'
 CAPTCHA_PREFIX = 'WeFi$'
 
 ID_OWNER = 398567252061978628
