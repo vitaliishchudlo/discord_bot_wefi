@@ -2,7 +2,7 @@ import os
 
 from dotenv import load_dotenv
 
-PATH_ENV_FILE = '.env.tmp'
+PATH_ENV_FILE = '.env'
 
 load_dotenv(PATH_ENV_FILE)
 
@@ -10,7 +10,7 @@ load_dotenv(PATH_ENV_FILE)
 #                 Variables:                #
 # # # # # # # # # # # # # # # # # # # # # # #
 
-BOT_TOKEN = str(os.getenv("BOT_TOKEN"))
+BOT_TOKEN = str(os.getenv('BOT_TOKEN'))
 
 ID_OWNER = 398567252061978628
 ID_ROLE_ADMIN = 830456241116938310
