@@ -15,7 +15,6 @@ class ClearChat(commands.Cog):
     @has_any_role(*config.TEST_LIST)
     async def clear(self, ctx, amount=1):
         defended_chats = config.DEFENDED_CHATS  # ID`s
-        import ipdb; ipdb.set_trace()
         if not bool(ctx.channel.id in defended_chats):
             await ctx.message.delete()
             return await ctx.channel.purge(limit=amount)
