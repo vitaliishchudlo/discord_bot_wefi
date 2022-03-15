@@ -22,6 +22,11 @@ class Database:
         pass
 
     def reset_sequecne(self, table_name):
+        sql = 'SELECT 1 FROM sqlite_sequence WHERE name=?'
+        val = (table_name, )
+        self.cur.execute(sql, val)
+        if not bool(self.cur.fetchall()):
+            return False
         sql = 'UPDATE sqlite_sequence SET seq=? WHERE name=?'
         val = (0, table_name)
         try:
