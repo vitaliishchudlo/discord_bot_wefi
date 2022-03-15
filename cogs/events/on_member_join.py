@@ -4,6 +4,7 @@ import random
 from captcha.image import ImageCaptcha
 from discord import File
 from discord.ext import commands
+from discord.utils import get
 
 from data import config
 from database.db import Database
@@ -57,11 +58,14 @@ class Register(commands.Cog):
     async def register(self, ctx, *, captcha: str):
         captcha_valid = Database().get_captcha_text(discord_id=ctx.author.id)
         if captcha_valid == captcha.lower():
-            return await ctx.send('Congrats, giving roles')
+            role_other = get(ctx.guild.roles, id=config.ID_ROLE_OTHER)
+            await ctx.author.add_roles(role_other)
+            return await ctx.send(
+                f'✅ {ctx.author.mention} gets the role - {role_other}')
         captcha_picture = generate_captcha(ctx.author.id, ctx.author.name)
         await ctx.send(
             f'⛔ {ctx.author.mention} **Not validated!**\n'
-            f'Here is a new captcha'
+            f'Here is a new captcha. '
             f'Please, enter:  **{config.BOT_PREFIX}register** __captcha__',
             file=captcha_picture)
 
