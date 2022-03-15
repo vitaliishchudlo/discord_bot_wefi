@@ -104,7 +104,6 @@ celerybeat.pid
 # Environments
 
 .venv
-.env.tmp
 venv/
 ENV/
 env.bak/
@@ -132,3 +131,5 @@ dmypy.json
 # CUSTOM
 tasks.txt
 test.py
+
+.env

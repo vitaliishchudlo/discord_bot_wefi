@@ -2,7 +2,7 @@ import os
 
 from dotenv import load_dotenv
 
-PATH_ENV_FILE = '.env.tmp'
+PATH_ENV_FILE = '.env'
 
 load_dotenv(PATH_ENV_FILE)
 
@@ -10,21 +10,30 @@ load_dotenv(PATH_ENV_FILE)
 #                 Variables:                #
 # # # # # # # # # # # # # # # # # # # # # # #
 
-BOT_TOKEN = str(os.getenv("BOT_TOKEN"))
+BOT_TOKEN = str(os.getenv('BOT_TOKEN'))
 
-OWNER_ID = str(os.getenv("OWNER_ID"))
-ADMIN_ROLE = str(os.getenv("ADMIN_ROLE"))
-MODERATOR_ROLE = str(os.getenv("MODERATOR_ROLE"))
-ACHIVEMENTS_CHAT_NAME = str(os.getenv("ACHIVEMENTS_CHAT_NAME"))
-ACHIVEMENT_ROLE_NAME = str(os.getenv("ACHIVEMENT_ROLE_NAME"))
+ID_OWNER = 398567252061978628
+ID_ROLE_ADMIN = 830456241116938310
+ID_ROLE_MODERATOR = 952960220714401863
 
-PATH_DATABASE = str(os.getenv("PATH_DATABASE"))
+ID_CHAT_ACHIEVEMENT_STATISTICS = 916003184063963176
+ID_CHAT_ACHIEVEMENT_INFO = 917522912980893757
+ID_ROLE_ACHIEVEMENTS = 952280483759292456  # WeFi
 
 DEFENDED_CHATS = [
-    str(os.getenv("ACHIVEMENT_CHAT_STATISTIC")),
-    str(os.getenv("ACHIVEMENTS_CHAT_INFO"))
+    ID_CHAT_ACHIEVEMENT_STATISTICS,
+    ID_CHAT_ACHIEVEMENT_INFO
 ]
-ADMINS_ROLES = [
-    str(os.getenv("MODERATOR_ROLE")),
-    str(os.getenv("ADMIN_ROLE_NAME"))
+
+ID_ROLES_ACHIEVEMENTS_EDITORS = [
+    ID_ROLE_ADMIN,
+    ID_ROLE_MODERATOR
 ]
+
+TEST_LIST = [
+    ID_ROLE_ADMIN,
+    ID_ROLE_MODERATOR,
+    ID_ROLE_ACHIEVEMENTS
+]
+
+PATH_DATABASE = 'database/database.db'
