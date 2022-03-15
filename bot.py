@@ -5,9 +5,13 @@ from data import config
 import os
 os.system('clear')
 
-bot = commands.Bot(command_prefix=('.', ';'), intents=discord.Intents.all())
+intents = discord.Intents.default()
+intents.members = True
+
+bot = commands.Bot(command_prefix=('.', ';'), intents=intents)
 
 bot.load_extension("cogs.events.on_ready")
+bot.load_extension("cogs.events.on_member_join")
 
 bot.load_extension("cogs.cogs_manager")
 

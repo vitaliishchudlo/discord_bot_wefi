@@ -133,3 +133,4 @@ tasks.txt
 test.py
 
 .env
+database/database.db
