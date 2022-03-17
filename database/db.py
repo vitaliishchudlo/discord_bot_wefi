@@ -23,7 +23,7 @@ class Database:
 
     def reset_sequecne(self, table_name):
         sql = 'SELECT 1 FROM sqlite_sequence WHERE name=?'
-        val = (table_name, )
+        val = (table_name,)
         self.cur.execute(sql, val)
         if not bool(self.cur.fetchall()):
             return False
@@ -51,3 +51,21 @@ class Database:
         except Exception as err:
             print(err)
             return False
+
+    def register_user(self, discord_id, user_name, captcha_text):
+        sql_get_user = 'DELETE FROM registration_users WHERE discord_id=?'
+        val = (discord_id,)
+        self.cur.execute(sql_get_user, val)
+
+        sql = 'INSERT INTO registration_users (discord_id, username, captcha) ' \
+              'VALUES (?,?,?)'
+        val = (discord_id, user_name, captcha_text)
+        self.cur.execute(sql, val)
+        self.conn.commit()
+        self.conn.close()
+
+    def get_captcha_text(self, discord_id):
+        sql = 'SELECT captcha FROM registration_users WHERE discord_id=?'
+        val = (discord_id,)
+        self.cur.execute(sql, val)
+        return self.cur.fetchone()[0]
