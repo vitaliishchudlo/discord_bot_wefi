@@ -1,3 +1,4 @@
+from discord import Member
 from discord.ext import commands
 
 
@@ -6,7 +7,7 @@ class JsonInfo(commands.Cog):
         self.bot = bot
 
     @commands.command()
-    async def json(self, ctx):
+    async def json(self, ctx, member: Member):
 
         roles = ctx.bot.guilds[0].roles
         members = ctx.bot.guilds[0].members
@@ -23,24 +24,21 @@ class JsonInfo(commands.Cog):
 
         text_channels_list = []
         for text_channel in text_channels:
-            text_channels_list.append(f'ID: {text_channel.id} NAME: {text_channel.name}')
+            text_channels_list.append(
+                f'ID: {text_channel.id} NAME: {text_channel.name}')
 
         voice_channels_list = []
         for voice_channel in voice_channels:
-            voice_channels_list.append(f'ID: {voice_channel.id} NAME: {voice_channel.name}')
+            voice_channels_list.append(
+                f'ID: {voice_channel.id} NAME: {voice_channel.name}')
 
-        await ctx.send('**ROLES:**')
-        await ctx.send(f'\n'.join(roles_list))
+        await ctx.send(f'**ROLES**\n{" ".join(roles_list)}')
 
-        await ctx.send('**MEMBERS:**')
-        await ctx.send(f'\n'.join(members_list))
+        await ctx.send(f'**MEMBERS**\n{" ".join(members_list)}')
 
-        await ctx.send('**TEXT CHANNELS:**')
-        await ctx.send(f'\n'.join(text_channels_list))
+        await ctx.send(f'**TEXT CHANNELS**\n{" ".join(text_channels_list)}')
 
-        await ctx.send('**VOICE CHANNELS:**')
-        await ctx.send(f'\n'.join(voice_channels_list))
-
+        await ctx.send(f'**VOICE CHANNELS**\n{" ".join(voice_channels_list)}')
 
 
 def setup(bot):
