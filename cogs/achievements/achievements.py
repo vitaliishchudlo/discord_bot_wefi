@@ -14,7 +14,7 @@ class Achivements(commands.Cog):
     @has_any_role(config.ID_OWNER, config.ID_ROLE_ADMIN, config.ID_ROLE_MODERATOR)
     async def achi_add(self, ctx, member: Member, game: str, type: str, count: int):
         message = await ctx.send('Updating data...🔄')
-        response = Database().get_achievements_data(
+        response = Database().update_achievements_data(
             member.id, member.name, game, type, count)
         return await message.edit(
             content='Updating data...✅\n'

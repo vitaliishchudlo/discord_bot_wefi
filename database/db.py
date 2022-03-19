@@ -86,7 +86,13 @@ class Database:
             return False
         return response
 
-    def get_achievements_data(self, discord_id, discord_name, game, type, count):
+    def get_achievement_data(self):
+        sql_select = 'SELECT * FROM achievement_statistics ORDER BY discord_id, game, type'
+        self.cur.execute(sql_select)
+        response = self.cur.fetchall()
+        return response
+
+    def update_achievements_data(self, discord_id, discord_name, game, type, count):
         sql_select = 'SELECT count FROM achievement_statistics ' \
                      'WHERE discord_id=?' \
                      'AND game=?' \
