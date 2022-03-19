@@ -20,8 +20,7 @@ class Achivements(commands.Cog):
             content='Updating data...✅\n'
                     f'{member.name} - {game} - {type} - **{response}**')
 
-    @commands.Cog.listener()
-    async def on_command_error(self, ctx, error):
+    async def cog_command_error(self, ctx, error):
         if isinstance(error, MissingAnyRole):
             return await ctx.send('Sorry, you do not have permissions to do that!')
         # Request to the DB to take all the
