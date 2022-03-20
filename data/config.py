@@ -49,3 +49,7 @@ CAPTCHA_BODY = [
     'Love Ukraine',
     'No Russia'
 ]
+
+
+VERSION_PREFIX = 'BETA'
+VERSION_NUBMER = '0.1'

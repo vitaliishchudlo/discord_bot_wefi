@@ -1,4 +1,3 @@
-from discord import Member
 from discord.ext import commands
 
 
@@ -7,7 +6,7 @@ class JsonInfo(commands.Cog):
         self.bot = bot
 
     @commands.command()
-    async def json(self, ctx, member: Member):
+    async def json(self, ctx):
 
         roles = ctx.bot.guilds[0].roles
         members = ctx.bot.guilds[0].members
@@ -32,13 +31,13 @@ class JsonInfo(commands.Cog):
             voice_channels_list.append(
                 f'ID: {voice_channel.id} NAME: {voice_channel.name}')
 
-        await ctx.send(f'**ROLES**\n{" ".join(roles_list)}')
+        await ctx.send(f'**ROLES**\n{chr(10).join(roles_list)}')
 
-        await ctx.send(f'**MEMBERS**\n{" ".join(members_list)}')
+        await ctx.send(f'**MEMBERS**\n{chr(10).join(members_list)}')
 
-        await ctx.send(f'**TEXT CHANNELS**\n{" ".join(text_channels_list)}')
+        await ctx.send(f'**TEXT CHANNELS**\n{chr(10).join(text_channels_list)}')
 
-        await ctx.send(f'**VOICE CHANNELS**\n{" ".join(voice_channels_list)}')
+        return await ctx.send(f'**VOICE CHANNELS**\n{chr(10).join(voice_channels_list)}')
 
 
 def setup(bot):

@@ -17,7 +17,8 @@ bot.load_extension('cogs.events.on_member_join')
 
 bot.load_extension('cogs.cogs_manager')
 
-bot.load_extension('cogs.achivements.achivements')
+bot.load_extension('cogs.achievements.refresh')
+bot.load_extension('cogs.achievements.achievements')
 bot.load_extension('cogs.system.clear_chat')
 bot.load_extension('cogs.system.json')
 
