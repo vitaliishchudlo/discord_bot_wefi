@@ -29,13 +29,12 @@ def load_extensions(bot):
     bot.load_extension('cogs.system.json')
 
 
-if __name__ == '__main__':
-    if not config.BOT_TOKEN:
-        print('[ERROR]: Enter the BOT_TOKEN in the .env file (example .env.tmp)')
-        exit(-1)
-    clear()
-    intents = discord.Intents.default()
-    intents.members = True
-    bot = commands.Bot(command_prefix=config.BOT_PREFIX, intents=intents)
-    load_extensions(bot)
-    bot.run(config.BOT_TOKEN)
+if not config.BOT_TOKEN:
+    print('[ERROR]: Enter the BOT_TOKEN in the .env file (example .env.tmp)')
+    exit(-1)
+clear()
+intents = discord.Intents.default()
+intents.members = True
+bot = commands.Bot(command_prefix=config.BOT_PREFIX, intents=intents)
+load_extensions(bot)
+bot.run(config.BOT_TOKEN)
