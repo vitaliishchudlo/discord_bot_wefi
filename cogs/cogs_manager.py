@@ -1,6 +1,5 @@
 from discord.ext import commands
-
-from bot import bot
+from discord_bot_wefi.bot import bot
 
 
 class CogsManager(commands.Cog):
@@ -11,7 +10,7 @@ class CogsManager(commands.Cog):
     @commands.is_owner()
     async def reload(self, ctx, *, name: str):
         try:
-            bot.reload_extension(f"cogs.{name}")
+            bot.reload_extension(f'cogs.{name}')
         except Exception as e:
             return await ctx.send(e)
         await ctx.send(f'"**{name}**" Cog reloaded')
@@ -20,7 +19,7 @@ class CogsManager(commands.Cog):
     @commands.is_owner()
     async def unload(self, ctx, *, name: str):
         try:
-            bot.unload_extension(f"cogs.{name}")
+            bot.unload_extension(f'cogs.{name}')
         except Exception as e:
             return await ctx.send(e)
         await ctx.send(f'"**{name}**" Cog unloaded')
@@ -29,7 +28,7 @@ class CogsManager(commands.Cog):
     @commands.is_owner()
     async def load(self, ctx, *, name: str):
         try:
-            bot.load_extension(f"cogs.{name}")
+            bot.load_extension(f'cogs.{name}')
         except Exception as e:
             return await ctx.send(e)
         await ctx.send(f'"**{name}**" Cog loaded')

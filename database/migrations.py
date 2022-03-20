@@ -28,7 +28,9 @@ migrates = (
         constraint achievement_games_pk
             primary key autoincrement,
     name varchar(50) not null,
-    type varchar(50) not null);
+    type varchar(50) not null,
+    comment varchar(255),
+    comment_game varchar(255));
     """,
     """
     create table achievement_statistics(
