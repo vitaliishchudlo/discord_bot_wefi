@@ -28,7 +28,9 @@ migrates = (
         constraint achievement_games_pk
             primary key autoincrement,
     name varchar(50) not null,
-    type varchar(50) not null);
+    type varchar(50) not null,
+    comment varchar(255),
+    comment_game varchar(255));
     """,
     """
     create table achievement_statistics(
@@ -40,6 +42,15 @@ migrates = (
     game varchar(50) not null,
     type varchar(50) not null,
     count numeric(11) not null);
+    """,
+    """
+    create table registration_users(
+    id integer
+        constraint achievement_statistics_pk
+            primary key autoincrement,
+    discord_id numeric not null,
+    username varchar(50) not null,
+    captcha varchar(50) not null);
     """,
 )
 
