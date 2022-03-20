@@ -17,12 +17,14 @@ class Achivements(commands.Cog):
         header = ''
         last_member = response[0][1]
         body = []
+        statistic_chat = ctx.bot.get_channel(
+            config.ID_CHAT_ACHIEVEMENT_STATISTICS)
         for row in response:
             if last_member == row[1]:
                 header = f'╔{"═" * 20}╗\n║{" " * 22}**{row[2]}**\n╠{"═" * 20}╝\n'
                 body.append(f'╠═► 🔹[{row[3]}]🔹 ━ {row[4]} ➔ {row[5]}\n║')
                 continue
-            await ctx.send(f'{header}{chr(10).join(body)}\n╚{"═" * 20}╝\n')
+            await statistic_chat.send(f'{header}{chr(10).join(body)}\n╚{"═" * 20}╝\n')
             last_member = row[1]
             header = f'╔{"═" * 20}╗\n║{" " * 22}**{row[2]}**\n╠{"═" * 20}╝\n'
             body.clear()

@@ -21,14 +21,16 @@ class OnReady(commands.Cog):
             if achievement_role_id in str(role.id):
                 status_role = True
         if not status_role:
-            exit(f'Achievement role with ID: {achievement_role_id} - does not exists')
+            exit(
+                f'Achievement role with ID: {achievement_role_id} - does not exists')
 
         print('Updating users with achievement role...')
         for member in self.bot.guilds[0].members:
             for role in member.roles:
                 if str(role.id) == achievement_role_id:
                     users.append(member)
-                    print(f'**{member.name}** ID({member.id}) - have role "{achievement_role_id}"')
+                    print(
+                        f'**{member.name}** ID({member.id}) - have role "{achievement_role_id}"')
         print('\n')
 
         if not Database().reset_sequecne('achievement_users'):
@@ -44,7 +46,8 @@ class OnReady(commands.Cog):
             print(f'{len(users)} users have been added to the DB')
 
         print('\nStarting Bot...SUCCESS\n\n')
-        await self.bot.change_presence(activity=Game('Beta version 1.0'))
+        await self.bot.change_presence(
+            activity=Game(f'{config.VERSION_PREFIX} {config.VERSION_NUBMER}'))
 
 
 def setup(bot):
