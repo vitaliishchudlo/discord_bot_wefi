@@ -1,0 +1,12 @@
+{
+  "Cogs": {
+    "system": {
+      "user_id": null,
+      "admin_id": "12345",
+      "chat_id": 12345
+    },
+    "events": {
+      "admin_id": null
+    }
+  }
+}
