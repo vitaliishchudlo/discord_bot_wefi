@@ -19,7 +19,7 @@ migrates = (
     id integer
         constraint achievement_users_pk
             primary key autoincrement,
-    discord_id numeric not null,
+    discord_id integer not null,
     username varchar(50) not null);
     """,
     """

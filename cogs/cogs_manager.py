@@ -1,5 +1,5 @@
 from discord.ext import commands
-from discord_bot_wefi.bot import bot
+from bot import bot
 
 
 class CogsManager(commands.Cog):

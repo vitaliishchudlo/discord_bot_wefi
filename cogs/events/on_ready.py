@@ -2,8 +2,7 @@ from discord import Game
 from discord.ext import commands
 
 from data import config
-from discord_bot_wefi.database.db import Database
-
+from database.db import Database
 
 class OnReady(commands.Cog):
     def __init__(self, bot):
