@@ -1,7 +1,16 @@
-Cogs:
-  system:
-    user_id:
-    admin_id: '12345'
-    chat_id: 12345
-  events:
-    admin_id:
+cogs:
+  cogs_manager: null
+
+  # Systems:
+  clear_chat: null
+  json: null
+
+  # Events:
+  on_member_join: null
+  on_ready: null
+
+  # Achievements:
+  achievements: null
+  refresh: null
+
+
