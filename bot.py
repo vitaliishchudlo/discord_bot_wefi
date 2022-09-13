@@ -32,7 +32,8 @@ def load_extensions(bot):
 if not config.BOT_TOKEN:
     print('[ERROR]: Enter the BOT_TOKEN in the .env file (example .env.tmp)')
     exit(-1)
-clear()
+
+#clear()
 intents = discord.Intents.default()
 intents.members = True
 bot = commands.Bot(command_prefix=config.BOT_PREFIX, intents=intents)
