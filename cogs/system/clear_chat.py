@@ -1,19 +1,45 @@
 import asyncio
-import time
-
-from discord.ext import commands
-from discord.ext.commands import MissingPermissions, has_any_role
+import os.path
 
 from data import config
+from discord.ext import commands
+from discord.ext.commands import MissingPermissions, has_any_role
 
 
 class ClearChat(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self._process_config_data()
+
+    def _process_config_data(self):
+        current_file_name = os.path.basename(__file__).replace('.py', '')
+        cog_values = None
+
+        for cog in config.cogs:
+            cog_name = list(cog.keys())[0]
+            if '.' in cog_name:
+                cog_name = cog_name.split('.')[-1]
+            if not cog_name == current_file_name:
+                continue
+            cog_values = cog.values()
+
+        print(cog_values)
+        print(list(cog_values))
+
+        import ipdb; ipdb.set_trace(context=5)
+
+
+
+
 
     @commands.command()
-    @has_any_role(*config.TEST_LIST)
+    # @has_any_role(*config.TEST_LIST)
     async def clear(self, ctx, amount=1):
+        import ipdb; ipdb.set_trace(context=5)
+
+
+
+
         defended_chats = config.DEFENDED_CHATS  # ID`s
         if not bool(ctx.channel.id in defended_chats):
             await ctx.message.delete()
