@@ -56,6 +56,7 @@ class Register(commands.Cog):
 
     @commands.command()
     async def register(self, ctx, *, captcha: str):
+        import ipdb; ipdb.set_trace(context=5)
         captcha_valid = Database().get_captcha_text(discord_id=ctx.author.id)
         if captcha_valid == captcha.lower():
             role_other = get(ctx.guild.roles, id=config.ID_ROLE_OTHER)

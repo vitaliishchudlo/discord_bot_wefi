@@ -6,17 +6,30 @@ PATH_ENV_FILE = '.env'
 
 load_dotenv(PATH_ENV_FILE)
 
-# # # # # # # # # # # # # # # # # # # # # # #
-#                 Variables:                #
-# # # # # # # # # # # # # # # # # # # # # # #
-
 BOT_TOKEN = str(os.getenv('BOT_TOKEN'))
-
 BOT_PREFIX = '.'
-CAPTCHA_PREFIX = 'WeFi$'
+
+PATH_DATABASE = 'database/database.db'
+
+CAPTCHA_BODY = [
+    'slavaukraini',
+    'fuckrussia',
+    'bandera',
+    'bayraktar',
+    'javelin',
+    'himars'
+]
+
+VERSION_PREFIX = 'TESTING'
+VERSION_NUBMER = ''
 
 ID_OWNER = 398567252061978628
-ID_ROLE_ADMIN = 830456241116938310
+
+# # # # # # # # # # # # # # # # # # # # # # #
+#   #   #   #   #   #   #   #   #   #   #   #
+# # # # # # # # # # # # # # # # # # # # # # #
+
+ID_ROLE_ADMIN = None
 ID_ROLE_MODERATOR = 952960220714401863
 
 ID_CHAT_ACHIEVEMENT_STATISTICS = 916003184063963176
@@ -36,20 +49,23 @@ ID_ROLES_ACHIEVEMENTS_EDITORS = [
     ID_ROLE_MODERATOR
 ]
 
-TEST_LIST = [
+ADMINS_ROLES = [
     ID_ROLE_ADMIN,
     ID_ROLE_MODERATOR,
-    ID_ROLE_ACHIEVEMENTS
 ]
 
-PATH_DATABASE = 'database/database.db'
+cogs = [
+    {"cogs_manager": [None]},
 
-CAPTCHA_BODY = [
-    'Putin Xyilo',
-    'Love Ukraine',
-    'No Russia'
+    # Systems:
+    {"system.clear_chat": [*ADMINS_ROLES]},
+    {"system.json": [None]},
+
+    # Events:
+    {"events.on_member_join": [None]},
+    {"events.on_ready": [None]},
+
+    # Achievements:
+    {"achievements.achievements": [None]},
+    {"achievements.refresh": [None]}
 ]
-
-
-VERSION_PREFIX = 'TESTING'
-VERSION_NUBMER = ''

@@ -1,9 +1,21 @@
+variables:
+  BOT_COMMAND_PREFIX: "."
+
+
+  ADMIN_ID: 1234
+
+
+  ADMINS_LIST:
+
+
+
+
 cogs:
-  cogs_manager: null
+  cogs_manager: null # No needed any data
 
   # Systems:
-  clear_chat: null
-  json: null
+  clear_chat: ADMINS_LIST
+  json: null # No needed any data
 
   # Events:
   on_member_join: null
@@ -12,5 +24,4 @@ cogs:
   # Achievements:
   achievements: null
   refresh: null
-
 
