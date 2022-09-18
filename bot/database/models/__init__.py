@@ -1,1 +1,3 @@
-from .main import register_models
+from .users import base
+
+__all__ = ["base"]
