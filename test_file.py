@@ -1,7 +1,7 @@
 import sys
 
-from models.users import User
-from test_structure.database import Session
+from discord_bot_wefi.bot.database.models.users import User
+from discord_bot_wefi.bot.database.db_init import Session
 
 def go_test():
     session = Session()

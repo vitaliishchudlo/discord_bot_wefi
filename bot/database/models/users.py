@@ -1,15 +1,16 @@
 from sqlalchemy import Column, String, Integer
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import Column, Integer, String
 
-base = declarative_base()
+from discord_bot_wefi.bot.database.db_init import Base
 
-class User(base):
+
+class User(Base):
     __tablename__ = 'users'
+
     id = Column(Integer, primary_key=True)
     name = Column(String)
     fullname = Column(String)
 
     def __repr__(self):
         return f'<User(name={self.name}, fullname={self.fullname})>'
-
-base.metadata.create_all()
