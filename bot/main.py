@@ -18,7 +18,7 @@ def start_bot():
 
     if not os.path.isfile(conf.PATH_DATABASE) or 'migrate' in sys.argv:
         create_db()
-        
+
     # Set custom status to "Listening to ?help"
     # ActivityType: unknown=-1, playing=0, streaming=1, listening=2, watching=3, custom=4, competing=5, unknown=-1
 
