@@ -139,7 +139,7 @@ captchas/
 
 # DATABASES files
 *.db
-!spec/*.sqlite
+*.sqlite
 
 
 
