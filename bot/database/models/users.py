@@ -1,5 +1,3 @@
-from sqlalchemy import Column, String, Integer
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String
 
 from discord_bot_wefi.bot.database.db_init import Base

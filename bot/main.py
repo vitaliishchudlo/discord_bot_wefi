@@ -1,25 +1,22 @@
 import os
 
-import discord_bot_wefi.bot.config as config
+from discord_bot_wefi.bot.misc import env
 from nextcord import Intents, Activity, ActivityType
 from nextcord.ext.commands import Bot
 
 from discord_bot_wefi.bot.cogs import register_all_cogs
 from discord_bot_wefi.bot.database.db_init import create_db
+from discord_bot_wefi.bot.misc import config as conf
 
-from discord_bot_wefi.test_file import go_test
 
 def start_bot():
     # Checking whether the user has added a bot token
-    if not config.BOT_TOKEN:
+    if not env.BOT_TOKEN:
         print('[ERROR]: Fill the BOT_TOKEN variable in the .env file (example in .env.tmp).')
         exit(-1)
 
-    if not os.path.isfile('database.sqlite'):
+    if not os.path.isfile(conf.PATH_DATABASE):
         create_db()
-    go_test()
-
-
 
     # Set custom status to "Listening to ?help"
     # ActivityType: unknown=-1, playing=0, streaming=1, listening=2, watching=3, custom=4, competing=5, unknown=-1

@@ -1,6 +1,6 @@
-from abc import ABC
-from typing import Final
+BOT_PREFIX = '.'
+
+PATH_DATABASE = 'database.sqlite'
 
 
-class Config(ABC):
-    CMD_PREFIX: Final = '/'
+

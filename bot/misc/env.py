@@ -1,7 +1,10 @@
 import os
-from abc import ABC
-from typing import Final
 
+from dotenv import load_dotenv
 
-class Env(ABC):
-    TOKEN: Final = os.environ.get('TOKEN', 'define me!')
+PATH_ENV_FILE = '.env'
+
+load_dotenv(PATH_ENV_FILE)
+
+BOT_TOKEN = str(os.getenv('BOT_TOKEN'))
+
