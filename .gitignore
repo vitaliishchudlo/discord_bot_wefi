@@ -136,4 +136,10 @@ captchas/
 *captchas/
 
 .env
-database/database.db
+
+# DATABASES files
+*.db
+!spec/*.sqlite
+
+
+
