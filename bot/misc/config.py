@@ -1,4 +1,3 @@
-BOT_PREFIX = '.'
-
 PATH_DATABASE = 'bot/database/database.sqlite'
 
+BOT_PREFIX = '.'
