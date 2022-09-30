@@ -133,6 +133,13 @@ tasks.txt
 test.py
 
 captchas/
+*captchas/
 
 .env
-database/database.db
+
+# DATABASES files
+*.db
+*.sqlite
+
+
+

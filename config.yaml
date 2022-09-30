@@ -1,27 +1,28 @@
+database:
+  PATH_DATABASE: 'bot/database/database.sqlite'
+
+
+
+
+
 variables:
   BOT_COMMAND_PREFIX: "."
-
-
   ADMIN_ID: 1234
+  ADMINS_LIST: [123, 1234]
 
 
-  ADMINS_LIST:
-
-
-
-
-cogs:
-  cogs_manager: null # No needed any data
-
-  # Systems:
-  clear_chat: ADMINS_LIST
-  json: null # No needed any data
-
-  # Events:
-  on_member_join: null
-  on_ready: null
-
-  # Achievements:
-  achievements: null
-  refresh: null
-
+#cogs:
+#  cogs_manager:
+#      cogs_manager: null
+#
+#  systems:
+#    clear_chat: null
+#    json: null
+#
+#  events:
+#    on_member_join: null
+#    on_ready: null
+#
+#  achievements:
+#    achievements: null
+#    refresh: null
