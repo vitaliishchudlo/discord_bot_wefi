@@ -1,1 +1,1 @@
-from .main import register_all_cogs
+from .cogs_runner import register_all_cogs

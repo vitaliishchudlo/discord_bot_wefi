@@ -17,12 +17,11 @@ def start_bot():
         print('[ERROR]: Fill the BOT_TOKEN variable in the .env file (example in .env.tmp).')
         exit(-1)
 
-    if not os.path.isfile(conf.PATH_DATABASE) or 'migrate' in sys.argv:
-        create_db()
+    # if not os.path.isfile(conf.PATH_DATABASE) or 'migrate' in sys.argv:
+    #     create_db()
 
     # Set custom status to "Listening to ?help"
     # ActivityType: unknown=-1, playing=0, streaming=1, listening=2, watching=3, custom=4, competing=5, unknown=-1
-
     activity = Activity(
         type=ActivityType.listening, name=f"{conf.BOT_PREFIX}help"
     )
@@ -45,7 +44,6 @@ def start_bot():
     # intents.presences = False
 
     bot = Bot(command_prefix=conf.BOT_PREFIX, intents=intents)
-
     register_all_cogs(bot)
 
     bot.run(env.BOT_TOKEN)
