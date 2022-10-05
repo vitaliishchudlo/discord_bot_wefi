@@ -1,6 +1,7 @@
 from nextcord.ext.commands import Bot
 
-from discord_bot_wefi.bot.cogs import admin as reg_admin_cogs
+from discord_bot_wefi.bot.cogs import events as reg_events_cog
+
 
 def register_all_cogs(bot: Bot) -> None:
     """
@@ -11,10 +12,8 @@ def register_all_cogs(bot: Bot) -> None:
         data = read_config_yaml()['cogs']
     """
     cogs = (
-        reg_admin_cogs.main.register_admin_cogs,
-        reg_admin_cogs.second.register_admin_cogs,
+        reg_events_cog.on_ready.register_cog,
 
     )
     for cog in cogs:
         cog(bot)
-

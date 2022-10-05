@@ -9,6 +9,7 @@ from discord_bot_wefi.bot.misc.util import BColors
 
 engine = create_engine(f'sqlite:///{conf.PATH_DATABASE}')
 Session = sessionmaker(bind=engine)
+session  = Session()
 
 Base = declarative_base()
 

@@ -5,10 +5,16 @@ database:
 
 
 
+
 variables:
   BOT_COMMAND_PREFIX: "."
-  ADMIN_ID: 1234
-  ADMINS_LIST: [123, 1234]
+  ADMIN_ID:
+  ADMINS_LIST:
+
+
+tasks:
+  activity:
+    role_id_for_activity_track: 952280483759292456
 
 
 #cogs:
