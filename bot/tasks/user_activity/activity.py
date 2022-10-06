@@ -75,7 +75,7 @@ class __UserActivity(Cog):
             user_activity = UserActivity(date=today_date, active_minutes=1, user_id=user.id)
             session.add(user_activity)
             session.commit()
-            continue
+            
 
         print('Done. Sleeping 5 seconds')
 
