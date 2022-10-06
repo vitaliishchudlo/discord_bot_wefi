@@ -19,7 +19,7 @@ class __UserActivity(Cog):
         self.afk_channel = self.guild_data.afk_channel
         self.voice_channels = self.guild_data.voice_channels
 
-    def get_members_in_voice_chats(self):
+    def get_members_in_voice_channels(self):
         online_members_in_voice_chats = []
 
         for channel in self.voice_channels:
@@ -59,7 +59,7 @@ class __UserActivity(Cog):
         if self.role_id_for_activity_track:
             self.role_id_for_activity_track = self.bot.guilds[0].get_role(self.role_id_for_activity_track)
 
-        online_members_in_voice_chats = self.get_members_in_voice_chats()
+        online_members_in_voice_chats = self.get_members_in_voice_channels()
 
         import ipdb; ipdb.set_trace(context=5)
 
