@@ -28,6 +28,7 @@ class __UserActivity(Cog):
             # Filter AFK channel (if exists)
             if channel == self.afk_channel:
                 continue
+
             # Filter if no one is in the voice channel
             if not members:
                 continue
@@ -51,33 +52,46 @@ class __UserActivity(Cog):
 
         return online_members_in_voice_chats
 
-    @tasks.loop(seconds=10)
+    @tasks.loop(seconds=5)
     @commands.Cog.listener()
-    async def activity_check(self, *args, first_time=False):
+    async def activity_voice_channels_check(self, *args, first_time=False):
         await self.bot.wait_until_ready()
 
+        print('Before:')
+        before = datetime.today()
+        print(datetime.strftime(before, '%d/%m/%Y %X%m%S')[:-2])
+
         if self.role_id_for_activity_track:
-            self.role_id_for_activity_track = self.bot.guilds[0].get_role(self.role_id_for_activity_track)
+            self.role_id_for_activity_track = self.bot.guilds[0].get_role(
+                self.role_id_for_activity_track)
 
         online_members_in_voice_chats = self.get_members_in_voice_channels()
 
-        import ipdb; ipdb.set_trace(context=5)
-
-
+        today_date = datetime.strptime(datetime.strftime(
+            datetime.today(), '%d/%m/%Y'), '%d/%m/%Y')
         for member in online_members_in_voice_chats:
-            today_date = datetime.strptime(datetime.strftime(datetime.today(), "%d/%m/%Y"), "%d/%m/%Y")
             user = session.query(User).filter_by(discord_id=member.id).first()
-            user_activity = session.query(UserActivity).filter_by(user_id=user.id, date=today_date).first()
+            user_activity = session.query(UserActivity).filter_by(
+                user_id=user.id, date=today_date).first()
             if user_activity:
-                user_activity.active_minutes += 1
+                user_activity.minutes_in_voice_channels += 1
                 session.commit()
                 continue
-            user_activity = UserActivity(date=today_date, active_minutes=1, user_id=user.id)
+            user_activity = UserActivity(
+                date=today_date, minutes_in_voice_channels=1, user_id=user.id)
             session.add(user_activity)
             session.commit()
-            
 
-        print('Done. Sleeping 5 seconds')
+        print(
+            f'Users: {[x.name for x in online_members_in_voice_chats]} were saved in DataBase')
+
+        print('After:')
+        after = datetime.today()
+        print(datetime.strftime(after, '%d/%m/%Y %X%m%S')[:-2])
+
+        print('Різниця:')
+        print(after-before)
+        print('')
 
 
 def register_cog(bot: Bot) -> None:
