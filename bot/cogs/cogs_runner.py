@@ -1,6 +1,7 @@
 from nextcord.ext.commands import Bot
 
 from discord_bot_wefi.bot.cogs import events as reg_events_cog
+from discord_bot_wefi.bot.tasks import user_activity as reg_user_activity
 
 
 def register_all_cogs(bot: Bot) -> None:
@@ -13,6 +14,8 @@ def register_all_cogs(bot: Bot) -> None:
     """
     cogs = (
         reg_events_cog.on_ready.register_cog,
+        reg_user_activity.activity_for_user.register_cog,
+
 
     )
     for cog in cogs:

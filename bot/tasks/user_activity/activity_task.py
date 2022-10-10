@@ -1,25 +1,33 @@
 from datetime import datetime
 
+from nextcord import Color
+from nextcord import Embed
 from nextcord.ext import commands, tasks
 from nextcord.ext.commands import Cog, Bot
 
 from discord_bot_wefi.bot.database import session
 from discord_bot_wefi.bot.database.models.users import User
 from discord_bot_wefi.bot.database.models.users_activity import UserActivity
-from discord_bot_wefi.bot.misc.config import ROLE_ID_FOR_ACTIVITY_TRACK
+from discord_bot_wefi.bot.misc.config import ID_ROLE_FOR_ACTIVITY_TRACK, \
+    ID_TEXT_CHANNEL_FOR_REPORT_ACTIVITY
 
 
-class __UserActivity(Cog):
+class __UserActivityTask(Cog):
 
     def __init__(self, bot: Bot):
         self.bot = bot
-        self.role_id_for_activity_track = ROLE_ID_FOR_ACTIVITY_TRACK
+        self.role_id_for_activity_track = ID_ROLE_FOR_ACTIVITY_TRACK
 
         self.guild_data = self.bot.guilds[0]
         self.afk_channel = self.guild_data.afk_channel
         self.voice_channels = self.guild_data.voice_channels
 
-    def get_members_in_voice_channels(self):
+        self.date_for_report = datetime.strptime(datetime.strftime(
+            datetime.today(), '%d/%m/%Y'), '%d/%m/%Y')
+
+        self.report_color = None
+
+    async def get_members_in_voice_channels(self):
         online_members_in_voice_chats = []
 
         for channel in self.voice_channels:
@@ -54,21 +62,53 @@ class __UserActivity(Cog):
 
     @tasks.loop(seconds=5)
     @commands.Cog.listener()
-    async def activity_voice_channels_check(self, *args, first_time=False):
+    async def activity_voice_channels_check(self, *args):
         await self.bot.wait_until_ready()
 
-        print('Before:')
-        before = datetime.today()
-        print(datetime.strftime(before, '%d/%m/%Y %X%m%S')[:-2])
+        today_date = datetime.strptime(datetime.strftime(
+            datetime.today(), '%d/%m/%Y'), '%d/%m/%Y')
+
+        if not self.date_for_report == today_date:
+            if ID_TEXT_CHANNEL_FOR_REPORT_ACTIVITY:
+                channel_report = self.bot.get_channel(
+                    ID_TEXT_CHANNEL_FOR_REPORT_ACTIVITY)
+
+                users_names = []
+                users_activity = []
+                active_users_for_today = session.query(
+                    UserActivity).filter_by(date=self.date_for_report).all()
+                if active_users_for_today:
+                    for user in active_users_for_today:
+                        users_names.append(user.user.username)
+                        users_activity.append(
+                            str(user.minutes_in_voice_channels))
+                else:
+                    users_names.append(
+                        '__No one has visited the server today__')
+                    users_activity.append(':pleading_face:')
+
+                if self.report_color == Color.teal().blue():
+                    self.report_color = Color.teal().yellow()
+                else:
+                    self.report_color = Color.teal().blue()
+
+                embed = Embed(
+                    title=f"Activity report for {datetime.strftime(self.date_for_report, '%d/%m/%Y')}",
+                    description='This report shows activity in voice channels.', color=self.report_color)
+                embed.add_field(name='User', value='\n'.join(
+                    users_names), inline=True)
+                embed.add_field(name='Minutes', value='\n'.join(
+                    users_activity), inline=True)
+
+                await channel_report.send(embed=embed)
+                self.date_for_report = today_date
 
         if self.role_id_for_activity_track:
             self.role_id_for_activity_track = self.bot.guilds[0].get_role(
                 self.role_id_for_activity_track)
 
-        online_members_in_voice_chats = self.get_members_in_voice_channels()
+        online_members_in_voice_chats = await self.get_members_in_voice_channels()
 
-        today_date = datetime.strptime(datetime.strftime(
-            datetime.today(), '%d/%m/%Y'), '%d/%m/%Y')
         for member in online_members_in_voice_chats:
             user = session.query(User).filter_by(discord_id=member.id).first()
             user_activity = session.query(UserActivity).filter_by(
@@ -82,17 +122,6 @@ class __UserActivity(Cog):
             session.add(user_activity)
             session.commit()
 
-        print(
-            f'Users: {[x.name for x in online_members_in_voice_chats]} were saved in DataBase')
-
-        print('After:')
-        after = datetime.today()
-        print(datetime.strftime(after, '%d/%m/%Y %X%m%S')[:-2])
-
-        print('Різниця:')
-        print(after-before)
-        print('')
-
 
 def register_cog(bot: Bot) -> None:
-    bot.add_cog(__UserActivity(bot))
+    bot.add_cog(__UserActivityTask(bot))
