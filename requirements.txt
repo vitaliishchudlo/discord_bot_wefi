@@ -1,0 +1,4 @@
+nextcord==2.2.0
+python-dotenv==0.21.0
+PyYAML==6.0
+SQLAlchemy==1.4.42
