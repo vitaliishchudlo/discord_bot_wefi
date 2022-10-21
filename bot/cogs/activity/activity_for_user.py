@@ -1,17 +1,29 @@
-import random
+from datetime import datetime
 
-from nextcord import Color, ButtonStyle
+from nextcord import Color, ButtonStyle, Embed
 from nextcord.ext import commands
 from nextcord.ext.commands import Cog, Bot
 from nextcord.ui import Button, View
-from discord_bot_wefi.bot.database.models import User, UserActivity
+from sqlalchemy import func
+
 from discord_bot_wefi.bot.database import session
-import datetime
+from discord_bot_wefi.bot.database.models import User, UserActivity
+
+
 class __UserActivity(Cog):
 
     def __init__(self, bot: Bot):
         self.bot = bot
         self.report_color = Color.teal().purple()
+
+    async def someone_activity_lasts_btn_callback(self, interaction):
+        await interaction.response.send_message('someone_activity_lasts_btn_callback')
+
+    async def someone_activity_top_for_all_time_btn_callback(self, interaction):
+        await interaction.response.send_message('someone_activity_top_for_all_time_btn_callback')
+
+    async def someone_activity_summarly_btn_callback(self, interaction):
+        await interaction.response.send_message('someone_activity_summarly_btn_callback')
 
     async def everyones_activity_callback(self, interaction):
         async def everyone_activity_today_btn_callback(interaction):
@@ -46,13 +58,54 @@ class __UserActivity(Cog):
 
     async def my_activity_callback(self, interaction):
         async def my_activity_lasts_btn_callback(interaction):
-            await interaction.response.send_message('my_activity_lasts_button_callback')
+            user = session.query(User).filter_by(discord_id=self.ctx.author.id).first()
+            if not user:
+                return await interaction.response.send_message('Can`t find you in the database. Sorry.')
+            user_activity = session.query(UserActivity).filter_by(user_id=user.id).order_by(
+                UserActivity.date.desc()).all()[
+                            :50]
+            if not user_activity:
+                return await interaction.response.send_message('Can`t find your activity in the database :(')
+
+            result = {}
+            for activity in user_activity:
+                result[datetime.strftime(activity.date, '%d/%m/%Y')] = str(activity.minutes_in_voice_channels)
+
+            embed = Embed(
+                title=f"Activity report about _{user.username}_",
+                description='This report shows activity in voice channels.', color=self.report_color)
+            embed.add_field(name='ㅤㅤDate\ndd/mm/yyyy', value='\n'.join(result.keys()), inline=True)
+            embed.add_field(name='Minutes\nㅤ', value='\n'.join(result.values()), inline=True)
+
+            await interaction.response.send_message(embed=embed)
 
         async def my_activity_top_for_all_time_btn_callback(interaction):
             await interaction.response.send_message('my_activity_top_for_all_time_button_callback')
 
         async def my_activity_summarly_btn_callback(interaction):
-            await interaction.response.send_message('my_activity_summarly_button_callback')
+            user = session.query(User).filter_by(discord_id=self.ctx.author.id).first()
+            if not user:
+                return await interaction.response.send_message('Can`t find you in the database. Sorry.')
+            user_activity = \
+                session.query(func.sum(UserActivity.minutes_in_voice_channels)).filter_by(user_id=user.id)[0][0]
+            user_activity_period_start = session.query(UserActivity).filter_by(user_id=user.id).first()
+            user_activity_period_end = session.query(UserActivity).filter_by(user_id=user.id).order_by(
+                UserActivity.date.desc()).first()
+
+            if not user_activity:
+                return await interaction.response.send_message('Can`t find your activity in the database :(')
+
+            result = {}
+            result[f'{datetime.strftime(user_activity_period_start.date, "%d/%m/%Y")} - ' \
+                   f'{datetime.strftime(user_activity_period_end.date, "%d/%m/%Y")}'] = str(user_activity)
+
+            embed = Embed(
+                title=f"Activity report about _{user.username}_",
+                description='This report shows activity in voice channels.', color=self.report_color)
+            embed.add_field(name='ㅤㅤDate\ndd/mm/yyyy', value='\n'.join(result.keys()), inline=True)
+            embed.add_field(name='Minutes\nㅤ', value='\n'.join(result.values()), inline=True)
+
+            await interaction.response.send_message(embed=embed)
 
         lasts_btn = Button(label='lasts', style=ButtonStyle.blurple)
         top_for_all_time_btn = Button(label='TOP for all time', style=ButtonStyle.blurple)
@@ -68,15 +121,6 @@ class __UserActivity(Cog):
         myview.add_item(summarly_btn)
 
         await interaction.response.send_message('TEXT HERE', view=myview)
-
-    async def someone_activity_lasts_btn_callback(self, interaction):
-        await interaction.response.send_message('someone_activity_lasts_btn_callback')
-
-    async def someone_activity_top_for_all_time_btn_callback(self, interaction):
-        await interaction.response.send_message('someone_activity_top_for_all_time_btn_callback')
-
-    async def someone_activity_summarly_btn_callback(self, interaction):
-        await interaction.response.send_message('someone_activity_summarly_btn_callback')
 
     @commands.command(name='activity')
     async def activity_voice_channels_check(self, ctx, user_to_check=None):
@@ -104,7 +148,6 @@ class __UserActivity(Cog):
 
             except Exception:
                 return self.ctx.reply('The member parameter is incorrect. Select a person as "**@name**"')
-
         else:
 
             my_activity_btn = Button(label='My activity', style=ButtonStyle.blurple)
@@ -116,7 +159,6 @@ class __UserActivity(Cog):
             myview = View(timeout=180)
             myview.add_item(my_activity_btn)
             myview.add_item(everyones_activity_btn)
-
 
             await ctx.send('lol', view=myview)
 
