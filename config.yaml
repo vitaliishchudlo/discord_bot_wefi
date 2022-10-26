@@ -14,8 +14,8 @@ variables:
 
 tasks:
   activity:
-    role_id_for_activity_track: 952280483759292456
-
+    id_role_for_activity_track: 952280483759292456
+    id_text_channel_for_report: 952607509649190962
 
 #cogs:
 #  cogs_manager:

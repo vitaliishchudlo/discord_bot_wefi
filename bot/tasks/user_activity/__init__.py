@@ -1,1 +1,1 @@
-from .activity import __UserActivity
+from .activity_task import __UserActivityTask

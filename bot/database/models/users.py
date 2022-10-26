@@ -17,3 +17,4 @@ class User(Base):
 
     def __repr__(self):
         return f'<User(username={self.username}, discord_id={self.discord_id})>'
+
