@@ -1,5 +1,6 @@
 from datetime import datetime
 
+import nextcord
 from nextcord import Color, ButtonStyle, Embed
 from nextcord.ext import commands
 from nextcord.ext.commands import Cog, Bot
@@ -221,7 +222,7 @@ class __UserActivity(Cog):
 
     async def my_activity_callback(self, interaction):
         async def my_activity_lasts_btn_callback(interaction):
-            user = session.query(User).filter_by(discord_id=self.ctx.author.id).first()
+            user = session.query(User).filter_by(discord_id=self.ctx.user.id).first()
             if not user:
                 return await interaction.response.send_message('Can`t find you in the database. Sorry.')
             user_activity = session.query(UserActivity).filter_by(user_id=user.id).order_by(
@@ -243,7 +244,7 @@ class __UserActivity(Cog):
             await interaction.response.send_message(embed=embed)
 
         async def my_activity_top_for_all_time_btn_callback(interaction):
-            user = session.query(User).filter_by(discord_id=self.ctx.author.id).first()
+            user = session.query(User).filter_by(discord_id=self.ctx.user.id).first()
             if not user:
                 return await interaction.response.send_message('Can`t find you in the database. Sorry.')
             user_activity = session.query(UserActivity).filter_by(user_id=user.id). \
@@ -264,7 +265,7 @@ class __UserActivity(Cog):
             await interaction.response.send_message(embed=embed)
 
         async def my_activity_summarly_btn_callback(interaction):
-            user = session.query(User).filter_by(discord_id=self.ctx.author.id).first()
+            user = session.query(User).filter_by(discord_id=self.ctx.user.id).first()
             if not user:
                 return await interaction.response.send_message('Can`t find you in the database. Sorry.')
             user_activity = \
@@ -303,12 +304,12 @@ class __UserActivity(Cog):
 
         await interaction.response.send_message('TEXT HERE', view=myview)
 
-    @commands.command(name='activity')
+    @nextcord.slash_command(name='activity', description='12345 text description')
+    # @commands.command(name='activity')
     async def activity_voice_channels_check(self, ctx, user_to_check=None):
         await self.bot.wait_until_ready()
         self.ctx = ctx
         self.user_to_check = user_to_check
-
         if user_to_check:
             try:
                 self.selected_user_id = int(self.user_to_check.replace('@', '').replace('<', '').replace('>', ''))
@@ -333,7 +334,7 @@ class __UserActivity(Cog):
                 return await self.ctx.reply('The member parameter is incorrect. Select a person as "**@name**"')
         else:
 
-            my_activity_btn = Button(label=f'{self.ctx.author.name}\'s activity', style=ButtonStyle.blurple)
+            my_activity_btn = Button(label=f'{self.ctx.user.name}\'s activity', style=ButtonStyle.blurple)
             everyones_activity_btn = Button(label='Everyone\'s activity', style=ButtonStyle.blurple)
 
             my_activity_btn.callback = self.my_activity_callback
