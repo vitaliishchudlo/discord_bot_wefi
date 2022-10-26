@@ -7,7 +7,7 @@ from nextcord.ext.commands import Cog
 
 from discord_bot_wefi.bot.database import session, User
 from discord_bot_wefi.bot.misc.util import BColors
-from discord_bot_wefi.bot.tasks.tasks_runner import start_all_loops
+from discord_bot_wefi.bot.tasks.runner import start_all_loops
 
 
 class __OnReady(Cog):
