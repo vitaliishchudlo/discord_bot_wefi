@@ -19,7 +19,4 @@ class UserActivity(Base):
     user = relationship('User', backref='activity')
 
     def __repr__(self):
-        return '<UsersActivity(' \
-               f'minutes_in_voice_channels={self.minutes_in_voice_channels}, ' \
-               f'date={self.date}, ' \
-               f'user={self.user})>'
+        return f'<{self.__class__.__name__}(user={self.user}, )>'

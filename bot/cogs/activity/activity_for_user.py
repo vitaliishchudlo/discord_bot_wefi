@@ -310,6 +310,10 @@ class __UserActivity(Cog):
         await self.bot.wait_until_ready()
         self.ctx = ctx
         self.user_to_check = user_to_check
+
+
+
+
         if user_to_check:
             try:
                 self.selected_user_id = int(self.user_to_check.replace('@', '').replace('<', '').replace('>', ''))
