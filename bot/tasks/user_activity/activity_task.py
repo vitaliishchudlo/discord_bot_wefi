@@ -6,13 +6,13 @@ from nextcord.ext import commands, tasks
 from nextcord.ext.commands import Cog, Bot
 
 from discord_bot_wefi.bot.database import session
-from discord_bot_wefi.bot.database.models.users import User
-from discord_bot_wefi.bot.database.models.users_activity import UserActivity
+from discord_bot_wefi.bot.database.models.users import UserModel
+from discord_bot_wefi.bot.database.models.users_activity import UserActivityModel
 from discord_bot_wefi.bot.misc.config import ID_ROLE_FOR_ACTIVITY_TRACK, \
     ID_TEXT_CHANNEL_FOR_REPORT_ACTIVITY
 
 
-class __UserActivityTask(Cog):
+class UserActivityTask(Cog):
 
     def __init__(self, bot: Bot):
         self.bot = bot
@@ -76,7 +76,7 @@ class __UserActivityTask(Cog):
                 users_names = []
                 users_activity = []
                 active_users_for_today = session.query(
-                    UserActivity).filter_by(date=self.date_for_report).all()
+                    UserActivityModel).filter_by(date=self.date_for_report).all()
                 if active_users_for_today:
                     for user in active_users_for_today:
                         users_names.append(user.user.username)
@@ -110,18 +110,18 @@ class __UserActivityTask(Cog):
         online_members_in_voice_chats = await self.get_members_in_voice_channels()
 
         for member in online_members_in_voice_chats:
-            user = session.query(User).filter_by(discord_id=member.id).first()
-            user_activity = session.query(UserActivity).filter_by(
+            user = session.query(UserModel).filter_by(discord_id=member.id).first()
+            user_activity = session.query(UserActivityModel).filter_by(
                 user_id=user.id, date=today_date).first()
             if user_activity:
                 user_activity.minutes_in_voice_channels += 1
                 session.commit()
                 continue
-            user_activity = UserActivity(
+            user_activity = UserActivityModel(
                 date=today_date, minutes_in_voice_channels=1, user_id=user.id)
             session.add(user_activity)
             session.commit()
 
 
 def register_cog(bot: Bot) -> None:
-    bot.add_cog(__UserActivityTask(bot))
+    bot.add_cog(UserActivityTask(bot))

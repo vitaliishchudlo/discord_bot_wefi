@@ -4,7 +4,7 @@ from discord_bot_wefi.bot.database.db_init import Base
 from sqlalchemy.orm import declarative_base, relationship
 
 
-class User(Base):
+class UserModel(Base):
     __tablename__ = 'users'
 
     id = Column(Integer, primary_key=True)

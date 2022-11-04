@@ -6,7 +6,7 @@ from sqlalchemy import Column, ForeignKey, Integer, DateTime
 from sqlalchemy.orm import relationship
 
 
-class UserCaptcha(Base):
+class UserCaptchaModel(Base):
     __tablename__ = 'users_captcha'
 
     id = Column(Integer, primary_key=True)

@@ -8,10 +8,10 @@ from nextcord.ui import Button, View
 from sqlalchemy import func
 
 from discord_bot_wefi.bot.database import session
-from discord_bot_wefi.bot.database.models import User, UserActivity
+from discord_bot_wefi.bot.database.models import UserModel, UserActivityModel
 
 
-class __UserActivity(Cog):
+class UserActivity(Cog):
     def __init__(self, bot: Bot):
         self.bot = bot
         self.report_color = Color.teal().purple()
@@ -19,12 +19,11 @@ class __UserActivity(Cog):
     # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 
     async def someone_activity_lasts_btn_callback(self, interaction):
-        user = session.query(User).filter_by(discord_id=self.user_to_check.id).first()
+        user = session.query(UserModel).filter_by(discord_id=self.user_to_check.id).first()
         if not user:
             return await interaction.response.send_message(
                 f'Can`t find {self.user_to_check.name} in the database. Sorry.')
-        user_activity = session.query(UserActivity).filter_by(user_id=user.id).order_by(
-            UserActivity.date.desc()).limit(25).all()
+        user_activity = session.query(UserActivityModel).filter_by(user_id=user.id).order_by(UserActivityModel.date.desc()).limit(25).all()
 
         if not user_activity:
             return await interaction.response.send_message(
@@ -43,12 +42,12 @@ class __UserActivity(Cog):
         await interaction.response.send_message(embed=embed)
 
     async def someone_activity_top_for_all_time_btn_callback(self, interaction):
-        user = session.query(User).filter_by(discord_id=self.user_to_check.id).first()
+        user = session.query(UserModel).filter_by(discord_id=self.user_to_check.id).first()
         if not user:
             return await interaction.response.send_message(
                 f'Can`t find {self.user_to_check.name} in the database. Sorry.')
-        user_activity = session.query(UserActivity).filter_by(user_id=user.id). \
-            order_by(UserActivity.minutes_in_voice_channels.desc()).limit(25).all()
+        user_activity = session.query(UserActivityModel).filter_by(user_id=user.id). \
+            order_by(UserActivityModel.minutes_in_voice_channels.desc()).limit(25).all()
         if not user_activity:
             return await interaction.response.send_message(
                 f'Can`t find {self.user_to_check.name} activity in the database :(')
@@ -66,15 +65,15 @@ class __UserActivity(Cog):
         await interaction.response.send_message(embed=embed)
 
     async def someone_activity_summarly_btn_callback(self, interaction):
-        user = session.query(User).filter_by(discord_id=self.user_to_check.id).first()
+        user = session.query(UserModel).filter_by(discord_id=self.user_to_check.id).first()
         if not user:
             return await interaction.response.send_message(
                 f'Can`t find {self.user_to_check.name} in the database. Sorry.')
         user_activity = \
-            session.query(func.sum(UserActivity.minutes_in_voice_channels)).filter_by(user_id=user.id)[0][0]
-        user_activity_period_start = session.query(UserActivity).filter_by(user_id=user.id).first()
-        user_activity_period_end = session.query(UserActivity).filter_by(user_id=user.id).order_by(
-            UserActivity.date.desc()).first()
+            session.query(func.sum(UserActivityModel.minutes_in_voice_channels)).filter_by(user_id=user.id)[0][0]
+        user_activity_period_start = session.query(UserActivityModel).filter_by(user_id=user.id).first()
+        user_activity_period_end = session.query(UserActivityModel).filter_by(user_id=user.id).order_by(
+            UserActivityModel.date.desc()).first()
 
         if not user_activity:
             return await interaction.response.send_message(
@@ -97,7 +96,7 @@ class __UserActivity(Cog):
     async def everyones_activity_callback(self, interaction):
         async def everyone_activity_today_btn_callback(interaction):
             today_date = datetime.strptime(datetime.strftime(datetime.today(), '%d/%m/%Y'), '%d/%m/%Y')
-            user_activity = session.query(UserActivity).filter_by(date=today_date).limit(25).all()
+            user_activity = session.query(UserActivityModel).filter_by(date=today_date).limit(25).all()
             if not user_activity:
                 return await interaction.response.send_message('Can`t find activity in the database :(')
 
@@ -116,8 +115,8 @@ class __UserActivity(Cog):
             await interaction.response.send_message(embed=embed)
 
         async def everyone_activity_top_for_all_time_btn_callback(interaction):
-            user_activity = session.query(UserActivity).filter_by().order_by(
-                UserActivity.minutes_in_voice_channels.desc()).limit(25).all()
+            user_activity = session.query(UserActivityModel).filter_by().order_by(
+                UserActivityModel.minutes_in_voice_channels.desc()).limit(25).all()
             if not user_activity:
                 return await interaction.response.send_message('Can`t find your activity in the database :(')
 
@@ -141,7 +140,7 @@ class __UserActivity(Cog):
 
         async def everyone_activity_summarly_btn_callback(interaction):
 
-            users_activity = session.query(UserActivity).order_by(UserActivity.date.desc()).all()
+            users_activity = session.query(UserActivityModel).order_by(UserActivityModel.date.desc()).all()
             users_ids_to_sum = []
             for user_activity in users_activity:
                 if not user_activity.user_id in users_ids_to_sum:
@@ -152,13 +151,13 @@ class __UserActivity(Cog):
             results_minutes_in_voice_channels = []
 
             for user_id in users_ids_to_sum:
-                user = session.query(User).filter_by(id=user_id).first()
+                user = session.query(UserModel).filter_by(id=user_id).first()
                 user_activity = \
-                    session.query(func.sum(UserActivity.minutes_in_voice_channels)).filter_by(user_id=user_id)[0][0]
-                user_activity_period_start = session.query(func.min(UserActivity.date)).filter_by(
+                    session.query(func.sum(UserActivityModel.minutes_in_voice_channels)).filter_by(user_id=user_id)[0][0]
+                user_activity_period_start = session.query(func.min(UserActivityModel.date)).filter_by(
                     user_id=user_id).first()
-                user_activity_period_end = session.query(func.max(UserActivity.date)).filter_by(
-                    user_id=user_id).order_by(UserActivity.date.desc()).first()
+                user_activity_period_end = session.query(func.max(UserActivityModel.date)).filter_by(
+                    user_id=user_id).order_by(UserActivityModel.date.desc()).first()
                 results_date.append(f'{datetime.strftime(user_activity_period_start[0], "%d/%m/%Y")} - '
                                     f'{datetime.strftime(user_activity_period_end[0], "%d/%m/%Y")}')
                 results_usernames.append(user.username)
@@ -176,7 +175,7 @@ class __UserActivity(Cog):
 
         async def everyone_activity_lasts_btn_callback(interaction):
 
-            user_activity = session.query(UserActivity).order_by(UserActivity.date.desc()).limit(25).all()
+            user_activity = session.query(UserActivityModel).order_by(UserActivityModel.date.desc()).limit(25).all()
 
             if not user_activity:
                 return await interaction.response.send_message('Can`t find anyone activity in the database :(')
@@ -222,11 +221,11 @@ class __UserActivity(Cog):
 
     async def my_activity_callback(self, interaction):
         async def my_activity_lasts_btn_callback(interaction):
-            user = session.query(User).filter_by(discord_id=self.ctx.user.id).first()
+            user = session.query(UserModel).filter_by(discord_id=self.ctx.user.id).first()
             if not user:
                 return await interaction.response.send_message('Can`t find you in the database. Sorry.')
-            user_activity = session.query(UserActivity).filter_by(user_id=user.id).order_by(
-                UserActivity.date.desc()).limit(25).all()
+            user_activity = session.query(UserActivityModel).filter_by(user_id=user.id).order_by(
+                UserActivityModel.date.desc()).limit(25).all()
 
             if not user_activity:
                 return await interaction.response.send_message('Can`t find your activity in the database :(')
@@ -244,11 +243,11 @@ class __UserActivity(Cog):
             await interaction.response.send_message(embed=embed)
 
         async def my_activity_top_for_all_time_btn_callback(interaction):
-            user = session.query(User).filter_by(discord_id=self.ctx.user.id).first()
+            user = session.query(UserModel).filter_by(discord_id=self.ctx.user.id).first()
             if not user:
                 return await interaction.response.send_message('Can`t find you in the database. Sorry.')
-            user_activity = session.query(UserActivity).filter_by(user_id=user.id). \
-                order_by(UserActivity.minutes_in_voice_channels.desc()).limit(25).all()
+            user_activity = session.query(UserActivityModel).filter_by(user_id=user.id). \
+                order_by(UserActivityModel.minutes_in_voice_channels.desc()).limit(25).all()
             if not user_activity:
                 return await interaction.response.send_message('Can`t find your activity in the database :(')
 
@@ -265,14 +264,14 @@ class __UserActivity(Cog):
             await interaction.response.send_message(embed=embed)
 
         async def my_activity_summarly_btn_callback(interaction):
-            user = session.query(User).filter_by(discord_id=self.ctx.user.id).first()
+            user = session.query(UserModel).filter_by(discord_id=self.ctx.user.id).first()
             if not user:
                 return await interaction.response.send_message('Can`t find you in the database. Sorry.')
             user_activity = \
-                session.query(func.sum(UserActivity.minutes_in_voice_channels)).filter_by(user_id=user.id)[0][0]
-            user_activity_period_start = session.query(UserActivity).filter_by(user_id=user.id).first()
-            user_activity_period_end = session.query(UserActivity).filter_by(user_id=user.id).order_by(
-                UserActivity.date.desc()).first()
+                session.query(func.sum(UserActivityModel.minutes_in_voice_channels)).filter_by(user_id=user.id)[0][0]
+            user_activity_period_start = session.query(UserActivityModel).filter_by(user_id=user.id).first()
+            user_activity_period_end = session.query(UserActivityModel).filter_by(user_id=user.id).order_by(
+                UserActivityModel.date.desc()).first()
 
             if not user_activity:
                 return await interaction.response.send_message('Can`t find your activity in the database :(')
@@ -352,4 +351,4 @@ class __UserActivity(Cog):
 
 
 def register_cog(bot: Bot) -> None:
-    bot.add_cog(__UserActivity(bot))
+    bot.add_cog(UserActivity(bot))
