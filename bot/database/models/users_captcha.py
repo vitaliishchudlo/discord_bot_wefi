@@ -10,12 +10,12 @@ class UserCaptchaModel(Base):
     __tablename__ = 'users_captcha'
 
     id = Column(Integer, primary_key=True)
-    captcha = Column(String)
-    captcha_verified = Column(Boolean)
+    code = Column(String)
+    verified = Column(Boolean)
     user_id = Column(Integer(), ForeignKey('users.id'))
 
-    user = relationship('User', backref='captcha')
+    user = relationship('UserModel', backref='captcha')
 
     def __repr__(self):
-        return f'<{self.__class__.__name__}(user={self.user}, captcha_verified={self.captcha_verified},' \
-               f'captcha={self.captcha})>'
+        return f'<{self.__class__.__name__}(user={self.user}, verified={self.verified},' \
+               f'code={self.code})>'

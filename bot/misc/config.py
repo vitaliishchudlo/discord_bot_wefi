@@ -16,8 +16,14 @@ PATH_DATABASE = read_config_yaml()['database']['PATH_DATABASE']
 
 BOT_PREFIX = read_config_yaml()['variables']['BOT_COMMAND_PREFIX']
 
+ID_ROLE_FOR_ACTIVITY_TRACK = read_config_yaml().get('tasks').get('activity').get('id_role_for_activity_track')
+ID_TEXT_CHANNEL_FOR_REPORT_ACTIVITY = read_config_yaml().get('tasks').get('activity').get('id_text_channel_for_report')
 
-ID_ROLE_FOR_ACTIVITY_TRACK = read_config_yaml(
-)['tasks']['activity']['id_role_for_activity_track']
-ID_TEXT_CHANNEL_FOR_REPORT_ACTIVITY = read_config_yaml(
-)['tasks']['activity']['id_text_channel_for_report']
+ID_TEXT_CHANNEL_FOR_WELCOME = read_config_yaml().get('events').get('on_member_join').get('id_text_channel_for_welcome')
+CAPTCHAS_SAVING_PATH = read_config_yaml().get('events').get('on_member_join').get('captchas_saving_path')
+
+CAPTCHA_PREFIX = read_config_yaml().get('events').get('on_member_join').get('captcha_prefix')
+
+ID_ROLE_OTHER = read_config_yaml().get('roles_ids').get('other')
+
+ID_ROLE_AFTER_VERIFICATION = ID_ROLE_OTHER

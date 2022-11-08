@@ -9,6 +9,19 @@ from sqlalchemy import func
 
 from discord_bot_wefi.bot.database import session
 from discord_bot_wefi.bot.database.models import UserModel, UserActivityModel
+from discord_bot_wefi.bot.misc.config import ID_TEXT_CHANNEL_FOR_WELCOME, CAPTCHAS_SAVING_PATH, CAPTCHA_PREFIX
+import random
+
+import os
+import os
+import random
+
+from captcha.image import ImageCaptcha
+from nextcord import File
+from nextcord.ext.commands import Bot, Cog
+from nextcord.ext import commands
+
+from discord_bot_wefi.bot.misc.config import ID_TEXT_CHANNEL_FOR_WELCOME, CAPTCHAS_SAVING_PATH, CAPTCHA_PREFIX
 
 
 class UserActivity(Cog):
@@ -23,7 +36,8 @@ class UserActivity(Cog):
         if not user:
             return await interaction.response.send_message(
                 f'Can`t find {self.user_to_check.name} in the database. Sorry.')
-        user_activity = session.query(UserActivityModel).filter_by(user_id=user.id).order_by(UserActivityModel.date.desc()).limit(25).all()
+        user_activity = session.query(UserActivityModel).filter_by(user_id=user.id).order_by(
+            UserActivityModel.date.desc()).limit(25).all()
 
         if not user_activity:
             return await interaction.response.send_message(
@@ -153,7 +167,8 @@ class UserActivity(Cog):
             for user_id in users_ids_to_sum:
                 user = session.query(UserModel).filter_by(id=user_id).first()
                 user_activity = \
-                    session.query(func.sum(UserActivityModel.minutes_in_voice_channels)).filter_by(user_id=user_id)[0][0]
+                    session.query(func.sum(UserActivityModel.minutes_in_voice_channels)).filter_by(user_id=user_id)[0][
+                        0]
                 user_activity_period_start = session.query(func.min(UserActivityModel.date)).filter_by(
                     user_id=user_id).first()
                 user_activity_period_end = session.query(func.max(UserActivityModel.date)).filter_by(
@@ -309,9 +324,6 @@ class UserActivity(Cog):
         await self.bot.wait_until_ready()
         self.ctx = ctx
         self.user_to_check = user_to_check
-
-
-
 
         if user_to_check:
             try:
