@@ -1,11 +1,8 @@
 database:
   PATH_DATABASE: 'bot/database/database.sqlite'
 
-
-
 roles_ids:
-  other: 952282700780281938
-
+  other:
 
 variables:
   BOT_COMMAND_PREFIX: "/"
@@ -14,27 +11,12 @@ variables:
 
 events:
   on_member_join:
-    id_text_channel_for_welcome: 952278528458641438
+    id_text_channel_for_welcome:
     captchas_saving_path: "bot/cogs/events/captchas"
     captcha_prefix: 'WeFi'
 
 tasks:
   activity:
-    id_role_for_activity_track: 952280483759292456
-    id_text_channel_for_report: 952607509649190962
+    id_role_for_activity_track:
+    id_text_channel_for_report:
 
-#cogs:
-#  cogs_manager:
-#      cogs_manager: null
-#
-#  systems:
-#    clear_chat: null
-#    json: null
-#
-#  events:
-#    on_member_join: null
-#    on_ready: null
-#
-#  achievements:
-#    achievements: null
-#    refresh: null
