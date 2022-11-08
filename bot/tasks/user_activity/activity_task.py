@@ -22,6 +22,7 @@ class UserActivityTask(Cog):
             datetime.today(), '%d/%m/%Y'), '%d/%m/%Y')
 
         self.report_color = None
+        self.times_runner = 0
 
     async def get_members_in_voice_channels(self):
         self.guild_data = self.bot.guilds[0]

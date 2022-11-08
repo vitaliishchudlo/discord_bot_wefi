@@ -17,6 +17,8 @@ class OnMemberJoin(Cog):
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
+        await self.bot.wait_until_ready()
+
         if ID_TEXT_CHANNEL_FOR_WELCOME:
             self.welcome_chat = self.bot.get_channel(ID_TEXT_CHANNEL_FOR_WELCOME)
 
