@@ -5,12 +5,12 @@ from nextcord.ext import commands
 from nextcord.ext.commands import Bot
 from nextcord.ext.commands import Cog
 
-from discord_bot_wefi.bot.database import session, User
+from discord_bot_wefi.bot.database import session, UserModel
 from discord_bot_wefi.bot.misc.util import BColors
 from discord_bot_wefi.bot.tasks.runner import start_all_loops
 
 
-class __OnReady(Cog):
+class OnReady(Cog):
 
     def __init__(self, bot: Bot):
         self.bot = bot
@@ -18,12 +18,12 @@ class __OnReady(Cog):
     def init_users_with_db(self):
         all_members_on_server = [
             member for member in self.bot.get_all_members()]
-        all_members_on_database = session.query(User).all()
+        all_members_on_database = session.query(UserModel).all()
         all_members_discord_ids_on_database = [
             x.discord_id for x in all_members_on_database]
 
         for member in all_members_on_server:
-            member_model = User(
+            member_model = UserModel(
                 discord_id=member.id,
                 username=member.name,
                 discriminator=member.discriminator
@@ -52,4 +52,4 @@ class __OnReady(Cog):
 
 
 def register_cog(bot: Bot) -> None:
-    bot.add_cog(__OnReady(bot))
+    bot.add_cog(OnReady(bot))

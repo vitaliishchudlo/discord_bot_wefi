@@ -3,7 +3,8 @@ database:
 
 
 
-
+roles_ids:
+  other: 952282700780281938
 
 
 variables:
@@ -11,6 +12,11 @@ variables:
   ADMIN_ID:
   ADMINS_LIST:
 
+events:
+  on_member_join:
+    id_text_channel_for_welcome: 952278528458641438
+    captchas_saving_path: "bot/cogs/events/captchas"
+    captcha_prefix: 'WeFi'
 
 tasks:
   activity:
