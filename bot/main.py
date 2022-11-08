@@ -61,6 +61,6 @@ def start_bot():
     bot = Bot(command_prefix=conf.BOT_PREFIX, intents=intents)
 
     register_all_cogs(bot)
-    # start_all_loops(bot)
+    start_all_loops(bot)
 
     bot.run(env.BOT_TOKEN)
