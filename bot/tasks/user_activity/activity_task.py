@@ -18,16 +18,16 @@ class UserActivityTask(Cog):
         self.bot = bot
         self.role_id_for_activity_track = ID_ROLE_FOR_ACTIVITY_TRACK
 
-        self.guild_data = self.bot.guilds[0]
-        self.afk_channel = self.guild_data.afk_channel
-        self.voice_channels = self.guild_data.voice_channels
-
         self.date_for_report = datetime.strptime(datetime.strftime(
             datetime.today(), '%d/%m/%Y'), '%d/%m/%Y')
 
         self.report_color = None
 
     async def get_members_in_voice_channels(self):
+        self.guild_data = self.bot.guilds[0]
+        self.afk_channel = self.guild_data.afk_channel
+        self.voice_channels = self.guild_data.voice_channels
+
         online_members_in_voice_chats = []
 
         for channel in self.voice_channels:
