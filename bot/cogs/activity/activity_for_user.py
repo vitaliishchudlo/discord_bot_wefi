@@ -2,26 +2,12 @@ from datetime import datetime
 
 import nextcord
 from nextcord import Color, ButtonStyle, Embed
-from nextcord.ext import commands
-from nextcord.ext.commands import Cog, Bot
+from nextcord.ext.commands import Bot, Cog
 from nextcord.ui import Button, View
 from sqlalchemy import func
 
 from discord_bot_wefi.bot.database import session
 from discord_bot_wefi.bot.database.models import UserModel, UserActivityModel
-from discord_bot_wefi.bot.misc.config import ID_TEXT_CHANNEL_FOR_WELCOME, CAPTCHAS_SAVING_PATH, CAPTCHA_PREFIX
-import random
-
-import os
-import os
-import random
-
-from captcha.image import ImageCaptcha
-from nextcord import File
-from nextcord.ext.commands import Bot, Cog
-from nextcord.ext import commands
-
-from discord_bot_wefi.bot.misc.config import ID_TEXT_CHANNEL_FOR_WELCOME, CAPTCHAS_SAVING_PATH, CAPTCHA_PREFIX
 
 
 class UserActivity(Cog):
@@ -215,9 +201,9 @@ class UserActivity(Cog):
             await interaction.response.send_message(embed=embed)
 
         today_btn = Button(label='Today', style=ButtonStyle.blurple)
-        lasts_btn = Button(label='Lasts :back:', style=ButtonStyle.blurple)
-        top_for_all_time_btn = Button(label='Top for all time :top:', style=ButtonStyle.blurple, row=2)
-        summary_btn = Button(label='All-time total :hourglass_flowing_sand:', style=ButtonStyle.blurple, row=2)
+        lasts_btn = Button(label='Lasts', style=ButtonStyle.blurple)
+        top_for_all_time_btn = Button(label='Top for all time', style=ButtonStyle.blurple, row=2)
+        summary_btn = Button(label='All-time total', style=ButtonStyle.blurple, row=2)
 
         today_btn.callback = everyone_activity_today_btn_callback
         top_for_all_time_btn.callback = everyone_activity_top_for_all_time_btn_callback
@@ -303,9 +289,9 @@ class UserActivity(Cog):
 
             await interaction.response.send_message(embed=embed)
 
-        lasts_btn = Button(label='Lasts :back:', style=ButtonStyle.blurple)
-        top_for_all_time_btn = Button(label='Top for all time :top:', style=ButtonStyle.blurple)
-        summary_btn = Button(label='All-time total :hourglass_flowing_sand:', style=ButtonStyle.blurple)
+        lasts_btn = Button(label='Lasts', style=ButtonStyle.blurple)
+        top_for_all_time_btn = Button(label='Top for all time', style=ButtonStyle.blurple)
+        summary_btn = Button(label='All-time total', style=ButtonStyle.blurple)
 
         lasts_btn.callback = my_activity_lasts_btn_callback
         top_for_all_time_btn.callback = my_activity_top_for_all_time_btn_callback
@@ -330,9 +316,9 @@ class UserActivity(Cog):
                 self.selected_user_id = int(self.user_to_check.replace('@', '').replace('<', '').replace('>', ''))
                 self.user_to_check = self.ctx.guild.get_member(self.selected_user_id)
 
-                someone_activity_lasts_btn = Button(label='Lasts :back:', style=ButtonStyle.blurple)
-                someone_activity_top_for_all_time_btn = Button(label='Top for all time :top:', style=ButtonStyle.blurple)
-                someone_activity_summary_btn = Button(label='All-time total :hourglass_flowing_sand:', style=ButtonStyle.blurple)
+                someone_activity_lasts_btn = Button(label='Lasts', style=ButtonStyle.blurple)
+                someone_activity_top_for_all_time_btn = Button(label='Top for all time', style=ButtonStyle.blurple)
+                someone_activity_summary_btn = Button(label='All-time total', style=ButtonStyle.blurple)
 
                 someone_activity_lasts_btn.callback = self.someone_activity_lasts_btn_callback
                 someone_activity_top_for_all_time_btn.callback = self.someone_activity_top_for_all_time_btn_callback
