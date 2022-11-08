@@ -60,7 +60,7 @@ class UserActivityTask(Cog):
 
         return online_members_in_voice_chats
 
-    @tasks.loop(seconds=5)
+    @tasks.loop(seconds=60)
     @commands.Cog.listener()
     async def activity_voice_channels_check(self, *args):
         await self.bot.wait_until_ready()
