@@ -1,12 +1,10 @@
 import os
 import sys
-import time
 
 from nextcord import Intents, Activity, ActivityType
 from nextcord.ext.commands import Bot
 
 from discord_bot_wefi.bot.cogs import register_all_cogs
-from discord_bot_wefi.bot.tasks import start_all_loops
 from discord_bot_wefi.bot.database.db_init import create_db
 from discord_bot_wefi.bot.misc import config as conf
 from discord_bot_wefi.bot.misc import env
