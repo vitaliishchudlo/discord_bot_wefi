@@ -1,6 +1,5 @@
 from nextcord.ext.commands import Bot
 
-
 from discord_bot_wefi.bot import cogs as reg_cogs
 
 

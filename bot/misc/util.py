@@ -1,16 +1,10 @@
-from discord_bot_wefi.bot.misc.config import ID_TEXT_CHANNEL_FOR_WELCOME, CAPTCHAS_SAVING_PATH, CAPTCHA_PREFIX
-import random
-
-import os
 import os
 import random
 
 from captcha.image import ImageCaptcha
 from nextcord import File
-from nextcord.ext.commands import Bot, Cog
-from nextcord.ext import commands
 
-from discord_bot_wefi.bot.misc.config import ID_TEXT_CHANNEL_FOR_WELCOME, CAPTCHAS_SAVING_PATH, CAPTCHA_PREFIX
+from discord_bot_wefi.bot.misc.config import CAPTCHAS_SAVING_PATH, CAPTCHA_PREFIX
 
 
 class BColors:

@@ -58,8 +58,6 @@ class MemberVerification(commands.Cog):
         user = session.query(UserModel).filter_by(discord_id=ctx.user.id).first()
         validated_code = session.query(UserCaptchaModel).filter_by(user_id=user.id).first()
 
-
-
         if not validated_code or not self.code == validated_code.code.lower():
             captcha = Captcha(member_id=ctx.user.id)
             captcha.save_picture()

@@ -1,7 +1,6 @@
-from sqlalchemy import Column, Integer, String, BigInteger, INT
+from sqlalchemy import Column, Integer, String
 
 from discord_bot_wefi.bot.database.db_init import Base
-from sqlalchemy.orm import declarative_base, relationship
 
 
 class UserModel(Base):

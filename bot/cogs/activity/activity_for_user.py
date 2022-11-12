@@ -1,3 +1,4 @@
+import asyncio
 from datetime import datetime
 
 import nextcord
@@ -8,12 +9,17 @@ from sqlalchemy import func
 
 from discord_bot_wefi.bot.database import session
 from discord_bot_wefi.bot.database.models import UserModel, UserActivityModel
-
+from discord_bot_wefi.bot.misc.config import COGS_ACTIVITY_MESSAGE_EXPIRATION_TIME
 
 class UserActivity(Cog):
-    def __init__(self, bot: Bot):
+    def __init__(self, bot: Bot, msg_exp_time=60):
         self.bot = bot
         self.report_color = Color.teal().purple()
+
+        if COGS_ACTIVITY_MESSAGE_EXPIRATION_TIME:
+            self.msg_exp_time = COGS_ACTIVITY_MESSAGE_EXPIRATION_TIME
+        else:
+            self.msg_exp_time = msg_exp_time
 
     # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 
@@ -39,7 +45,7 @@ class UserActivity(Cog):
         embed.add_field(name='ㅤㅤDate\ndd/mm/yyyy', value='\n'.join(result.keys()), inline=True)
         embed.add_field(name='Minutes\nㅤ', value='\n'.join(result.values()), inline=True)
 
-        await interaction.response.send_message(embed=embed)
+        return await interaction.response.send_message(embed=embed)
 
     async def someone_activity_top_for_all_time_btn_callback(self, interaction):
         user = session.query(UserModel).filter_by(discord_id=self.user_to_check.id).first()
@@ -62,7 +68,7 @@ class UserActivity(Cog):
         embed.add_field(name='ㅤㅤDate\ndd/mm/yyyy', value='\n'.join(result.keys()), inline=True)
         embed.add_field(name='Minutes\nㅤ', value='\n'.join(result.values()), inline=True)
 
-        await interaction.response.send_message(embed=embed)
+        return await interaction.response.send_message(embed=embed)
 
     async def someone_activity_summary_btn_callback(self, interaction):
         user = session.query(UserModel).filter_by(discord_id=self.user_to_check.id).first()
@@ -89,7 +95,7 @@ class UserActivity(Cog):
         embed.add_field(name='ㅤㅤDate\ndd/mm/yyyy', value='\n'.join(result.keys()), inline=True)
         embed.add_field(name='Minutes\nㅤ', value='\n'.join(result.values()), inline=True)
 
-        await interaction.response.send_message(embed=embed)
+        return await interaction.response.send_message(embed=embed)
 
     # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 
@@ -112,7 +118,7 @@ class UserActivity(Cog):
             embed.add_field(name='Member\nㅤ', value='\n'.join(results_usernames), inline=True)
             embed.add_field(name='Minutes\nㅤ', value='\n'.join(results_minutes_in_voice_channels), inline=True)
 
-            await interaction.response.send_message(embed=embed)
+            return await interaction.response.send_message(embed=embed)
 
         async def everyone_activity_top_for_all_time_btn_callback(interaction):
             user_activity = session.query(UserActivityModel).filter_by().order_by(
@@ -136,7 +142,7 @@ class UserActivity(Cog):
             embed.add_field(name='Member\nㅤ', value='\n'.join(results_usernames), inline=True)
             embed.add_field(name='Minutes\nㅤ', value='\n'.join(results_minutes_in_voice_channels), inline=True)
 
-            await interaction.response.send_message(embed=embed)
+            return await interaction.response.send_message(embed=embed)
 
         async def everyone_activity_summary_btn_callback(interaction):
 
@@ -172,7 +178,7 @@ class UserActivity(Cog):
             embed.add_field(name='Member\nㅤ', value='\n'.join(results_usernames), inline=True)
             embed.add_field(name='Minutes\nㅤ', value='\n'.join(results_minutes_in_voice_channels), inline=True)
 
-            await interaction.response.send_message(embed=embed)
+            return await interaction.response.send_message(embed=embed)
 
         async def everyone_activity_lasts_btn_callback(interaction):
 
@@ -198,7 +204,7 @@ class UserActivity(Cog):
             embed.add_field(name='Member\nㅤ', value='\n'.join(results_usernames), inline=True)
             embed.add_field(name='Minutes\nㅤ', value='\n'.join(results_minutes_in_voice_channels), inline=True)
 
-            await interaction.response.send_message(embed=embed)
+            return await interaction.response.send_message(embed=embed)
 
         today_btn = Button(label='Today', style=ButtonStyle.blurple)
         lasts_btn = Button(label='Lasts', style=ButtonStyle.blurple)
@@ -210,13 +216,15 @@ class UserActivity(Cog):
         lasts_btn.callback = everyone_activity_lasts_btn_callback
         summary_btn.callback = everyone_activity_summary_btn_callback
 
-        myview = View(timeout=180)
+        myview = View(timeout=self.msg_exp_time)
         myview.add_item(today_btn)
         myview.add_item(top_for_all_time_btn)
         myview.add_item(lasts_btn)
         myview.add_item(summary_btn)
 
-        await interaction.response.send_message('TEXT AGAIN', view=myview)
+        msg_response = await interaction.response.send_message(view=myview)
+        await asyncio.sleep(self.msg_exp_time)
+        await msg_response.delete()
 
     # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 
@@ -241,7 +249,7 @@ class UserActivity(Cog):
             embed.add_field(name='ㅤㅤDate\ndd/mm/yyyy', value='\n'.join(result.keys()), inline=True)
             embed.add_field(name='Minutes\nㅤ', value='\n'.join(result.values()), inline=True)
 
-            await interaction.response.send_message(embed=embed)
+            return await interaction.response.send_message(embed=embed)
 
         async def my_activity_top_for_all_time_btn_callback(interaction):
             user = session.query(UserModel).filter_by(discord_id=self.ctx.user.id).first()
@@ -262,7 +270,7 @@ class UserActivity(Cog):
             embed.add_field(name='ㅤㅤDate\ndd/mm/yyyy', value='\n'.join(result.keys()), inline=True)
             embed.add_field(name='Minutes\nㅤ', value='\n'.join(result.values()), inline=True)
 
-            await interaction.response.send_message(embed=embed)
+            return await interaction.response.send_message(embed=embed)
 
         async def my_activity_summary_btn_callback(interaction):
             user = session.query(UserModel).filter_by(discord_id=self.ctx.user.id).first()
@@ -287,7 +295,7 @@ class UserActivity(Cog):
             embed.add_field(name='ㅤㅤDate\ndd/mm/yyyy', value='\n'.join(result.keys()), inline=True)
             embed.add_field(name='Minutes\nㅤ', value='\n'.join(result.values()), inline=True)
 
-            await interaction.response.send_message(embed=embed)
+            return await interaction.response.send_message(embed=embed)
 
         lasts_btn = Button(label='Lasts', style=ButtonStyle.blurple)
         top_for_all_time_btn = Button(label='Top for all time', style=ButtonStyle.blurple)
@@ -297,12 +305,14 @@ class UserActivity(Cog):
         top_for_all_time_btn.callback = my_activity_top_for_all_time_btn_callback
         summary_btn.callback = my_activity_summary_btn_callback
 
-        myview = View(timeout=180)
+        myview = View(timeout=self.msg_exp_time)
         myview.add_item(lasts_btn)
         myview.add_item(top_for_all_time_btn)
         myview.add_item(summary_btn)
 
-        await interaction.response.send_message('TEXT HERE', view=myview)
+        msg_response = await interaction.response.send_message(view=myview)
+        await asyncio.sleep(self.msg_exp_time)
+        await msg_response.delete()
 
     @nextcord.slash_command(name='activity', description='12345 text description')
     # @commands.command(name='activity')
@@ -324,12 +334,14 @@ class UserActivity(Cog):
                 someone_activity_top_for_all_time_btn.callback = self.someone_activity_top_for_all_time_btn_callback
                 someone_activity_summary_btn.callback = self.someone_activity_summary_btn_callback
 
-                myview = View(timeout=180)
+                myview = View(timeout=self.msg_exp_time)
                 myview.add_item(someone_activity_lasts_btn)
                 myview.add_item(someone_activity_top_for_all_time_btn)
                 myview.add_item(someone_activity_summary_btn)
 
-                await ctx.send(f'Activity for user {self.user_to_check.name}', view=myview)
+                msg_response = await ctx.send(f'Activity for user {self.user_to_check.name}', view=myview)
+                await asyncio.sleep(self.msg_exp_time)
+                await msg_response.delete()
 
             except Exception:
                 return await self.ctx.reply('The member parameter is incorrect. Select a person as "**@name**"')
@@ -341,11 +353,13 @@ class UserActivity(Cog):
             my_activity_btn.callback = self.my_activity_callback
             everyones_activity_btn.callback = self.everyones_activity_callback
 
-            myview = View(timeout=180)
+            myview = View(timeout=self.msg_exp_time)
             myview.add_item(my_activity_btn)
             myview.add_item(everyones_activity_btn)
 
-            await ctx.send('lol', view=myview)
+            msg_response = await ctx.send(view=myview)
+            await asyncio.sleep(self.msg_exp_time)
+            await msg_response.delete()
 
 
 def register_cog(bot: Bot) -> None:
