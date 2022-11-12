@@ -26,3 +26,5 @@ CAPTCHA_PREFIX = read_config_yaml().get('events').get('on_member_join').get('cap
 ID_ROLE_OTHER = read_config_yaml().get('roles_ids').get('other')
 
 ID_ROLE_AFTER_VERIFICATION = ID_ROLE_OTHER
+
+COGS_ACTIVITY_MESSAGE_EXPIRATION_TIME = read_config_yaml().get('cogs').get('activity').get('message_expiration_time')
