@@ -1,15 +1,6 @@
-import asyncio
-from datetime import datetime
-
 import nextcord
-from nextcord import Color, ButtonStyle, Embed
+from nextcord import Embed
 from nextcord.ext.commands import Bot, Cog
-from nextcord.ui import Button, View
-from sqlalchemy import func
-
-from discord_bot_wefi.bot.database import session
-from discord_bot_wefi.bot.database.models import UserModel, UserActivityModel
-from discord_bot_wefi.bot.misc.config import COGS_ACTIVITY_MESSAGE_EXPIRATION_TIME
 
 
 class JsonInfo(Cog):
@@ -35,23 +26,29 @@ class JsonInfo(Cog):
         voice_channels_names = [x.name for x in self.guild.voice_channels]
         voice_channels_ids = [str(x.id) for x in self.guild.voice_channels]
 
-
         embed_roles = Embed()
-        embed_roles.add_field(name='ID', value='\n'.join(roles_ids), inline=True)
-        embed_roles.add_field(name='Name', value='\n'.join(roles_names), inline=True)
+        embed_roles.add_field(
+            name='ID', value='\n'.join(roles_ids), inline=True)
+        embed_roles.add_field(
+            name='Name', value='\n'.join(roles_names), inline=True)
 
         embed_members = Embed()
-        embed_members.add_field(name='ID', value='\n'.join(members_ids), inline=True)
-        embed_members.add_field(name='Name', value='\n'.join(members_names), inline=True)
+        embed_members.add_field(
+            name='ID', value='\n'.join(members_ids), inline=True)
+        embed_members.add_field(
+            name='Name', value='\n'.join(members_names), inline=True)
 
         embed_text_channels = Embed()
-        embed_text_channels.add_field(name='ID', value='\n'.join(text_channels_ids), inline=True)
-        embed_text_channels.add_field(name='Name', value='\n'.join(text_channels_names), inline=True)
+        embed_text_channels.add_field(
+            name='ID', value='\n'.join(text_channels_ids), inline=True)
+        embed_text_channels.add_field(
+            name='Name', value='\n'.join(text_channels_names), inline=True)
 
         embed_voice_channels = Embed()
-        embed_voice_channels.add_field(name='ID', value='\n'.join(voice_channels_ids), inline=True)
-        embed_voice_channels.add_field(name='Name', value='\n'.join(voice_channels_names), inline=True)
-
+        embed_voice_channels.add_field(
+            name='ID', value='\n'.join(voice_channels_ids), inline=True)
+        embed_voice_channels.add_field(
+            name='Name', value='\n'.join(voice_channels_names), inline=True)
 
         await self.ctx.send(embed=embed_roles)
         await self.ctx.send(embed=embed_members)
@@ -61,9 +58,6 @@ class JsonInfo(Cog):
 
 def register_cog(bot: Bot) -> None:
     bot.add_cog(JsonInfo(bot))
-
-
-from discord.ext import commands
 
 # class JsonInfo(commands.Cog):
 #     def __init__(self, bot):

@@ -6,4 +6,5 @@ from .user_activity import UserActivityTask
 
 def start_all_loops(bot: Bot) -> None:
     UserActivityTask(bot).activity_voice_channels_check.start()
-    print(f'LOOPS(TASKS) FUNCTIONS: {BColors.OKGREEN}{BColors.BOLD}STARTED{BColors.ENDC}!')
+    print(
+        f'LOOPS(TASKS) FUNCTIONS: {BColors.OKGREEN}{BColors.BOLD}STARTED{BColors.ENDC}!')
