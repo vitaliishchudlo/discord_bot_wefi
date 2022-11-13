@@ -111,7 +111,8 @@ class UserActivityTask(Cog):
         online_members_in_voice_chats = await self.get_members_in_voice_channels()
 
         for member in online_members_in_voice_chats:
-            user = session.query(UserModel).filter_by(discord_id=member.id).first()
+            user = session.query(UserModel).filter_by(
+                discord_id=member.id).first()
             user_activity = session.query(UserActivityModel).filter_by(
                 user_id=user.id, date=today_date).first()
             if user_activity:

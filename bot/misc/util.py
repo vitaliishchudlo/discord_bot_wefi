@@ -53,7 +53,8 @@ class Captcha:
     def save_picture(self, custom_file_name=None):
         if not self.file_name:
             if not custom_file_name:
-                raise TypeError(f'You need to specify "custom_file_name" argument or input it in the config file')
+                raise TypeError(
+                    'You need to specify "custom_file_name" argument or input it in the config file')
         image = ImageCaptcha(width=500, height=100)
         image.write(self._code, self.file_path)
 
