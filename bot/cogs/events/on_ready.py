@@ -1,4 +1,5 @@
 import shutil
+from logging import getLogger
 
 from nextcord import Game
 from nextcord.ext import commands
@@ -8,6 +9,8 @@ from nextcord.ext.commands import Cog
 from discord_bot_wefi.bot.database import session, UserModel
 from discord_bot_wefi.bot.misc.util import BColors
 from discord_bot_wefi.bot.tasks.runner import start_all_loops
+
+logger = getLogger('BotLogger')
 
 
 class OnReady(Cog):
@@ -47,8 +50,7 @@ class OnReady(Cog):
               'The Bot has been successfully launched :-)'
               f'{BColors.ENDC}'.center(columns))
 
-        await self.bot.change_presence(
-            activity=Game('Testing'))
+        await self.bot.change_presence(activity=Game('Testing'))
 
 
 def register_cog(bot: Bot) -> None:
