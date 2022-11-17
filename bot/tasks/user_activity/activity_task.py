@@ -18,16 +18,17 @@ class UserActivityTask(Cog):
         self.bot = bot
         self.role_id_for_activity_track = ID_ROLE_FOR_ACTIVITY_TRACK
 
-        self.guild_data = self.bot.guilds[0]
-        self.afk_channel = self.guild_data.afk_channel
-        self.voice_channels = self.guild_data.voice_channels
-
         self.date_for_report = datetime.strptime(datetime.strftime(
             datetime.today(), '%d/%m/%Y'), '%d/%m/%Y')
 
         self.report_color = None
+        self.times_runner = 0
 
     async def get_members_in_voice_channels(self):
+        self.guild_data = self.bot.guilds[0]
+        self.afk_channel = self.guild_data.afk_channel
+        self.voice_channels = self.guild_data.voice_channels
+
         online_members_in_voice_chats = []
 
         for channel in self.voice_channels:
@@ -110,7 +111,8 @@ class UserActivityTask(Cog):
         online_members_in_voice_chats = await self.get_members_in_voice_channels()
 
         for member in online_members_in_voice_chats:
-            user = session.query(UserModel).filter_by(discord_id=member.id).first()
+            user = session.query(UserModel).filter_by(
+                discord_id=member.id).first()
             user_activity = session.query(UserActivityModel).filter_by(
                 user_id=user.id, date=today_date).first()
             if user_activity:
@@ -121,6 +123,7 @@ class UserActivityTask(Cog):
                 date=today_date, minutes_in_voice_channels=1, user_id=user.id)
             session.add(user_activity)
             session.commit()
+
 
 
 def register_cog(bot: Bot) -> None:

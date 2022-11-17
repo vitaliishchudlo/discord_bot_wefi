@@ -17,16 +17,21 @@ class OnMemberJoin(Cog):
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
+        await self.bot.wait_until_ready()
+
         if ID_TEXT_CHANNEL_FOR_WELCOME:
-            self.welcome_chat = self.bot.get_channel(ID_TEXT_CHANNEL_FOR_WELCOME)
+            self.welcome_chat = self.bot.get_channel(
+                ID_TEXT_CHANNEL_FOR_WELCOME)
 
         captcha = Captcha(member_id=member.id)
         captcha.save_picture()
 
         user = session.query(UserModel).filter_by(discord_id=member.id).first()
-        user_captcha = session.query(UserCaptchaModel).filter_by(user_id=user.id).first()
+        user_captcha = session.query(
+            UserCaptchaModel).filter_by(user_id=user.id).first()
         if not user_captcha:
-            user_captcha = UserCaptchaModel(code=captcha.get_code(), verified=False, user_id=user.id)
+            user_captcha = UserCaptchaModel(
+                code=captcha.get_code(), verified=False, user_id=user.id)
             session.add(user_captcha)
         else:
             user_captcha.code = captcha.get_code()
@@ -53,18 +58,20 @@ class MemberVerification(commands.Cog):
         if not code:
             return await ctx.response.send_message('Please, enter verification code!')
 
-        user = session.query(UserModel).filter_by(discord_id=ctx.user.id).first()
-        validated_code = session.query(UserCaptchaModel).filter_by(user_id=user.id).first()
-
-
+        user = session.query(UserModel).filter_by(
+            discord_id=ctx.user.id).first()
+        validated_code = session.query(
+            UserCaptchaModel).filter_by(user_id=user.id).first()
 
         if not validated_code or not self.code == validated_code.code.lower():
             captcha = Captcha(member_id=ctx.user.id)
             captcha.save_picture()
 
-            self.user_captcha = session.query(UserCaptchaModel).filter_by(user_id=user.id).first()
+            self.user_captcha = session.query(
+                UserCaptchaModel).filter_by(user_id=user.id).first()
             if not self.user_captcha:
-                user_captcha = UserCaptchaModel(code=captcha.get_code(), verified=False, user_id=user.id)
+                user_captcha = UserCaptchaModel(
+                    code=captcha.get_code(), verified=False, user_id=user.id)
                 session.add(user_captcha)
             else:
                 self.user_captcha.code = captcha.get_code()
@@ -74,7 +81,8 @@ class MemberVerification(commands.Cog):
                 f'⛔ {ctx.user.mention} **NOT verified!**\n\n'
                 f'Please, enter the command:  **{BOT_PREFIX}register** __code from image__', file=captcha.get_file())
         else:
-            self.user_captcha = session.query(UserCaptchaModel).filter_by(user_id=user.id).first()
+            self.user_captcha = session.query(
+                UserCaptchaModel).filter_by(user_id=user.id).first()
             self.user_captcha.verified = True
             session.commit()
 

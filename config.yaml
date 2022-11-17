@@ -19,3 +19,7 @@ tasks:
   activity:
     id_role_for_activity_track: 952280483759292456
     id_text_channel_for_report: 954793683323064401
+
+cogs:
+  activity:
+    message_expiration_time: 5

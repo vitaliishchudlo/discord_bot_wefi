@@ -1,3 +1,4 @@
+captcha==0.4
 nextcord==2.2.0
 python-dotenv==0.21.0
 PyYAML==6.0
