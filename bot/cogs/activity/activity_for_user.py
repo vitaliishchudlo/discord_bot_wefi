@@ -1,5 +1,6 @@
 import asyncio
 from datetime import datetime
+from logging import getLogger
 
 import nextcord
 from nextcord import Color, ButtonStyle, Embed
@@ -10,11 +11,13 @@ from sqlalchemy import func
 from discord_bot_wefi.bot.database import session
 from discord_bot_wefi.bot.database.models import UserModel, UserActivityModel
 from discord_bot_wefi.bot.misc.config import COGS_ACTIVITY_MESSAGE_EXPIRATION_TIME
-
-from logging import getLogger
+from discord_bot_wefi.bot.misc.util import minutes_converter
 
 logger = getLogger('BotLogger')
 
+DATE_COLUMN_NAME = 'ㅤㅤDate\ndd/mm/yyyy'
+MEMBER_COLUMN_NAME = 'Member\nㅤ'
+TIME_COLUMN_NAME = 'Time\nㅤ'
 
 class UserActivity(Cog):
     def __init__(self, bot: Bot, msg_exp_time=60):
@@ -26,6 +29,8 @@ class UserActivity(Cog):
         else:
             self.msg_exp_time = msg_exp_time
 
+    def format_time(self, time):
+        return list(map(minutes_converter,time))
     # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 
     async def someone_activity_lasts_btn_callback(self, interaction):
@@ -49,10 +54,9 @@ class UserActivity(Cog):
         embed = Embed(
             title=f'Activity report about _{user.username}_',
             description='This report shows activity in voice channels.', color=self.report_color)
-        embed.add_field(name='ㅤㅤDate\ndd/mm/yyyy',
+        embed.add_field(name=DATE_COLUMN_NAME,
                         value='\n'.join(result.keys()), inline=True)
-        embed.add_field(name='Minutes\nㅤ', value='\n'.join(
-            result.values()), inline=True)
+        embed.add_field(name=TIME_COLUMN_NAME, value='\n'.join(self.format_time(result.values())), inline=True)
 
         return await interaction.response.send_message(embed=embed)
 
@@ -76,10 +80,9 @@ class UserActivity(Cog):
         embed = Embed(
             title=f'Activity report about _{user.username}_',
             description='This report shows activity in voice channels.', color=self.report_color)
-        embed.add_field(name='ㅤㅤDate\ndd/mm/yyyy',
+        embed.add_field(name=DATE_COLUMN_NAME,
                         value='\n'.join(result.keys()), inline=True)
-        embed.add_field(name='Minutes\nㅤ', value='\n'.join(
-            result.values()), inline=True)
+        embed.add_field(name=TIME_COLUMN_NAME, value='\n'.join(self.format_time(result.values())), inline=True)
 
         return await interaction.response.send_message(embed=embed)
 
@@ -108,10 +111,9 @@ class UserActivity(Cog):
         embed = Embed(
             title=f'Activity report about _{user.username}_',
             description='This report shows activity in voice channels.', color=self.report_color)
-        embed.add_field(name='ㅤㅤDate\ndd/mm/yyyy',
+        embed.add_field(name=DATE_COLUMN_NAME,
                         value='\n'.join(result.keys()), inline=True)
-        embed.add_field(name='Minutes\nㅤ', value='\n'.join(
-            result.values()), inline=True)
+        embed.add_field(name=TIME_COLUMN_NAME, value='\n'.join(self.format_time(result.values())), inline=True)
 
         return await interaction.response.send_message(embed=embed)
 
@@ -136,10 +138,9 @@ class UserActivity(Cog):
             embed = Embed(
                 title=f"Activity report for _{datetime.strftime(today_date, '%d/%m/%Y')}_",
                 description='This report shows activity in voice channels.', color=self.report_color)
-            embed.add_field(name='Member\nㅤ', value='\n'.join(
+            embed.add_field(name=MEMBER_COLUMN_NAME, value='\n'.join(
                 results_usernames), inline=True)
-            embed.add_field(name='Minutes\nㅤ', value='\n'.join(
-                results_minutes_in_voice_channels), inline=True)
+            embed.add_field(name=TIME_COLUMN_NAME, value='\n'.join(self.format_time(results_minutes_in_voice_channels)), inline=True)
 
             return await interaction.response.send_message(embed=embed)
 
@@ -163,19 +164,18 @@ class UserActivity(Cog):
             embed = Embed(
                 title='Activity report for all-time',
                 description='This report shows activity in voice channels.', color=self.report_color)
-            embed.add_field(name='ㅤㅤDate\ndd/mm/yyyy',
+            embed.add_field(name=DATE_COLUMN_NAME,
                             value='\n'.join(results_date), inline=True)
-            embed.add_field(name='Member\nㅤ', value='\n'.join(
+            embed.add_field(name=MEMBER_COLUMN_NAME, value='\n'.join(
                 results_usernames), inline=True)
-            embed.add_field(name='Minutes\nㅤ', value='\n'.join(
-                results_minutes_in_voice_channels), inline=True)
+            embed.add_field(name=TIME_COLUMN_NAME, value='\n'.join(self.format_time(results_minutes_in_voice_channels)), inline=True)
 
             return await interaction.response.send_message(embed=embed)
 
         async def everyone_activity_summary_btn_callback(interaction):
 
             users_activity = session.query(UserActivityModel).order_by(
-                UserActivityModel.date.desc()).all()
+                UserActivityModel.date.desc(), UserActivityModel.minutes_in_voice_channels.desc()).all()
             users_ids_to_sum = []
             for user_activity in users_activity:
                 if user_activity.user_id not in users_ids_to_sum:
@@ -202,12 +202,11 @@ class UserActivity(Cog):
                 title='Summary activity report',
                 description='This report shows activity in voice channels.', color=self.report_color)
 
-            embed.add_field(name='ㅤㅤDate\ndd/mm/yyyy',
+            embed.add_field(name=DATE_COLUMN_NAME,
                             value='\n'.join(results_date), inline=True)
-            embed.add_field(name='Member\nㅤ', value='\n'.join(
+            embed.add_field(name=MEMBER_COLUMN_NAME, value='\n'.join(
                 results_usernames), inline=True)
-            embed.add_field(name='Minutes\nㅤ', value='\n'.join(
-                results_minutes_in_voice_channels), inline=True)
+            embed.add_field(name=TIME_COLUMN_NAME, value='\n'.join(self.format_time(results_minutes_in_voice_channels)), inline=True)
 
             return await interaction.response.send_message(embed=embed)
 
@@ -235,12 +234,11 @@ class UserActivity(Cog):
                 title='Recent activity report about _Everyone user_',
                 description='This report shows activity in voice channels.', color=self.report_color)
 
-            embed.add_field(name='ㅤㅤDate\ndd/mm/yyyy',
+            embed.add_field(name=DATE_COLUMN_NAME,
                             value='\n'.join(results_date), inline=True)
-            embed.add_field(name='Member\nㅤ', value='\n'.join(
+            embed.add_field(name=MEMBER_COLUMN_NAME, value='\n'.join(
                 results_usernames), inline=True)
-            embed.add_field(name='Minutes\nㅤ', value='\n'.join(
-                results_minutes_in_voice_channels), inline=True)
+            embed.add_field(name=TIME_COLUMN_NAME, value='\n'.join(self.format_time(results_minutes_in_voice_channels)), inline=True)
 
             return await interaction.response.send_message(embed=embed)
 
@@ -288,10 +286,9 @@ class UserActivity(Cog):
             embed = Embed(
                 title=f'Recent activity report about _{user.username}_',
                 description='This report shows activity in voice channels.', color=self.report_color)
-            embed.add_field(name='ㅤㅤDate\ndd/mm/yyyy',
+            embed.add_field(name=DATE_COLUMN_NAME,
                             value='\n'.join(result.keys()), inline=True)
-            embed.add_field(name='Minutes\nㅤ', value='\n'.join(
-                result.values()), inline=True)
+            embed.add_field(name=TIME_COLUMN_NAME, value='\n'.join(self.format_time(result.values())), inline=True)
 
             return await interaction.response.send_message(embed=embed)
 
@@ -314,10 +311,9 @@ class UserActivity(Cog):
             embed = Embed(
                 title=f'Activity report about _{user.username}_ for all-time',
                 description='This report shows activity in voice channels.', color=self.report_color)
-            embed.add_field(name='ㅤㅤDate\ndd/mm/yyyy',
+            embed.add_field(name=DATE_COLUMN_NAME,
                             value='\n'.join(result.keys()), inline=True)
-            embed.add_field(name='Minutes\nㅤ', value='\n'.join(
-                result.values()), inline=True)
+            embed.add_field(name=TIME_COLUMN_NAME, value='\n'.join(self.format_time(result.values())), inline=True)
 
             return await interaction.response.send_message(embed=embed)
 
@@ -344,10 +340,9 @@ class UserActivity(Cog):
             embed = Embed(
                 title=f'Summary activity report about _{user.username}_',
                 description='This report shows activity in voice channels.', color=self.report_color)
-            embed.add_field(name='ㅤㅤDate\ndd/mm/yyyy',
+            embed.add_field(name=DATE_COLUMN_NAME,
                             value='\n'.join(result.keys()), inline=True)
-            embed.add_field(name='Minutes\nㅤ', value='\n'.join(
-                result.values()), inline=True)
+            embed.add_field(name=TIME_COLUMN_NAME, value='\n'.join(self.format_time(result.values())), inline=True)
 
             return await interaction.response.send_message(embed=embed)
 
