@@ -125,5 +125,6 @@ class UserActivityTask(Cog):
             session.commit()
 
 
+
 def register_cog(bot: Bot) -> None:
     bot.add_cog(UserActivityTask(bot))

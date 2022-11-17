@@ -8,9 +8,12 @@ from discord_bot_wefi.bot.cogs import register_all_cogs
 from discord_bot_wefi.bot.database.db_init import create_db
 from discord_bot_wefi.bot.misc import config as conf
 from discord_bot_wefi.bot.misc import env
+from .bot_logger import BotLogger
 
 
 def start_bot():
+    BotLogger()
+
     # Checking whether the user has added a bot token
     if not env.BOT_TOKEN:
         print(

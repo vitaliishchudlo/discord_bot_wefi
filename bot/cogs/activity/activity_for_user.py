@@ -11,6 +11,10 @@ from discord_bot_wefi.bot.database import session
 from discord_bot_wefi.bot.database.models import UserModel, UserActivityModel
 from discord_bot_wefi.bot.misc.config import COGS_ACTIVITY_MESSAGE_EXPIRATION_TIME
 
+from logging import getLogger
+
+logger = getLogger('BotLogger')
+
 
 class UserActivity(Cog):
     def __init__(self, bot: Bot, msg_exp_time=60):
@@ -59,8 +63,7 @@ class UserActivity(Cog):
             return await interaction.response.send_message(
                 f'Can`t find {self.user_to_check.name} in the database. Sorry.')
         user_activity = session.query(UserActivityModel).filter_by(user_id=user.id). \
-            order_by(UserActivityModel.minutes_in_voice_channels.desc()).limit(
-            25).all()
+            order_by(UserActivityModel.minutes_in_voice_channels.desc()).limit(25).all()
         if not user_activity:
             return await interaction.response.send_message(
                 f'Can`t find {self.user_to_check.name} activity in the database :(')

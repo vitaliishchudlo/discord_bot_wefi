@@ -23,4 +23,4 @@ tasks:
 
 cogs:
   activity:
-    message_expiration_time: 60
+    message_expiration_time: 5
