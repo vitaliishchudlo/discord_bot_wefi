@@ -1,5 +1,5 @@
-import os
-import sys
+import os, sys, time
+
 
 from nextcord import Intents, Activity, ActivityType
 from nextcord.ext.commands import Bot
@@ -12,7 +12,15 @@ from .bot_logger import BotLogger
 
 
 def start_bot():
+    # Init logger for bot
     BotLogger()
+
+    # Set the right timezone
+    if conf.timezone:
+        os.environ['TZ'] = conf.timezone
+        time.tzset()
+
+    print('Time: ', time.strftime('%X %x %Z'))
 
     # Checking whether the user has added a bot token
     if not env.BOT_TOKEN:
