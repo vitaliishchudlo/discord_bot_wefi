@@ -40,7 +40,7 @@ class OnMemberJoin(Cog):
         await self.welcome_chat.send(
             f'Hey, {member.mention}, welcome to the {self.bot.guilds[0].name} 👋 \n'
             'To get more access, you need to be **verified**.\n\n'
-            f'Please, enter the command:  **{BOT_PREFIX}register** __code from image__',
+            f'Please, enter the command:  **{BOT_PREFIX}reg** __code from image__',
             file=captcha.get_file())
 
 
@@ -79,7 +79,7 @@ class MemberVerification(commands.Cog):
 
             return await ctx.response.send_message(
                 f'⛔ {ctx.user.mention} **NOT verified!**\n\n'
-                f'Please, enter the command:  **{BOT_PREFIX}register** __code from image__', file=captcha.get_file())
+                f'Please, enter the command:  **{BOT_PREFIX}reg** __code from image__', file=captcha.get_file())
         else:
             self.user_captcha = session.query(
                 UserCaptchaModel).filter_by(user_id=user.id).first()
