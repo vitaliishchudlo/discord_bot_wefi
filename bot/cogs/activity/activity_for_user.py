@@ -10,10 +10,11 @@ from sqlalchemy import func
 
 from discord_bot_wefi.bot.database import session
 from discord_bot_wefi.bot.database.models import UserModel, UserActivityModel
-from discord_bot_wefi.bot.misc.config import COGS_ACTIVITY_MESSAGE_EXPIRATION_TIME
+from discord_bot_wefi.bot.misc.config import COGS_ACTIVITY_MESSAGE_EXPIRATION_TIME, BotLoggerName
 from discord_bot_wefi.bot.misc.util import minutes_converter
 
-logger = getLogger('BotLogger')
+
+logger = getLogger(BotLoggerName)
 
 DATE_COLUMN_NAME = 'ㅤㅤDate\ndd/mm/yyyy'
 MEMBER_COLUMN_NAME = 'Member\nㅤ'

@@ -49,14 +49,14 @@ class MemberVerification(commands.Cog):
         self.code = None
         self.bot = bot
 
-    @nextcord.slash_command(name='register', description='Registration. Input code')
+    @nextcord.slash_command(name='reg', description='Registration. Input code')
     async def register(self, ctx, code: str):
         await self.bot.wait_until_ready()
 
-        self.code = code.lower().replace(' ', '')
-
         if not code:
             return await ctx.response.send_message('Please, enter verification code!')
+
+        self.code = code.lower().replace(' ', '')
 
         user = session.query(UserModel).filter_by(
             discord_id=ctx.user.id).first()
