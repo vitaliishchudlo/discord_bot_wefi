@@ -123,12 +123,6 @@ class UserActivityTask(Cog):
 
         online_members_in_voice_chats = await self.get_members_in_voice_channels()
 
-        # for user in online_members_in_voice_chats:
-        #     await user.edit(mute=True)
-
-        import ipdb;
-        ipdb.set_trace(context=5)
-
         for member in online_members_in_voice_chats:
             user = session.query(UserModel).filter_by(
                 discord_id=member.id).first()
