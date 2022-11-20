@@ -83,7 +83,7 @@ def minutes_converter(given_minutes):
             return f'{hours} h. {minutes} min.'
         return result
         """
-    import ipdb; ipdb.set_trace(context=5)
+
     given_minutes = int(given_minutes)
     if given_minutes < 60:
         return f'{given_minutes} min.'

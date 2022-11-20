@@ -124,8 +124,8 @@ class UserActivity(Cog):
         async def everyone_activity_today_btn_callback(interaction):
             today_date = datetime.strptime(datetime.strftime(
                 datetime.today(), '%d/%m/%Y'), '%d/%m/%Y')
-            user_activity = session.query(UserActivityModel).filter_by(
-                date=today_date).limit(25).all()
+            user_activity = session.query(UserActivityModel).filter_by(date=today_date).order_by(
+                UserActivityModel.minutes_in_voice_channels.desc()).limit(25).all()
             if not user_activity:
                 return await interaction.response.send_message('Can`t find activity in the database :(')
 
@@ -142,11 +142,12 @@ class UserActivity(Cog):
             embed.add_field(name=MEMBER_COLUMN_NAME, value='\n'.join(
                 results_usernames), inline=True)
             embed.add_field(name=TIME_COLUMN_NAME, value='\n'.join(self.format_time(results_minutes_in_voice_channels)), inline=True)
+            import ipdb; ipdb.set_trace(context=5)
 
             return await interaction.response.send_message(embed=embed)
 
         async def everyone_activity_top_for_all_time_btn_callback(interaction):
-            user_activity = session.query(UserActivityModel).filter_by().order_by(
+            user_activity = session.query(UserActivityModel).order_by(
                 UserActivityModel.minutes_in_voice_channels.desc()).limit(25).all()
             if not user_activity:
                 return await interaction.response.send_message('Can`t find your activity in the database :(')
