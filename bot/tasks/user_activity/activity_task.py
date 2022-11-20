@@ -73,7 +73,7 @@ class UserActivityTask(Cog):
                 response.append(member)
         return response
 
-    @tasks.loop(seconds=10)
+    @tasks.loop(seconds=60)
     @commands.Cog.listener()
     async def activity_voice_channels_check(self, *args):
         await self.bot.wait_until_ready()
@@ -89,8 +89,9 @@ class UserActivityTask(Cog):
 
                 users_names = []
                 users_activity = []
-                active_users_for_today = session.query(
-                    UserActivityModel).filter_by(date=self.date_for_report).all()
+                active_users_for_today = session.query(UserActivityModel).filter_by(
+                    date=self.date_for_report).order_by(UserActivityModel.minutes_in_voice_channels.desc()).all()
+
                 if active_users_for_today:
                     for user in active_users_for_today:
                         users_names.append(user.user.username)
@@ -116,13 +117,13 @@ class UserActivityTask(Cog):
 
                 await channel_report.send(embed=embed)
                 self.date_for_report = today_date
+        # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
         if self.role_id_for_activity_track:
             self.role_id_for_activity_track = self.bot.guilds[0].get_role(
                 self.role_id_for_activity_track)
 
         online_members_in_voice_chats = await self.get_members_in_voice_channels()
-
 
         for member in online_members_in_voice_chats:
             user = session.query(UserModel).filter_by(
