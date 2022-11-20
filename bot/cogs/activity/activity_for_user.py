@@ -4,7 +4,9 @@ from logging import getLogger
 
 import nextcord
 from nextcord import Color, ButtonStyle, Embed
+from nextcord import SlashOption
 from nextcord.ext.commands import Bot, Cog
+from nextcord.member import Member
 from nextcord.ui import Button, View
 from sqlalchemy import func
 
@@ -13,12 +15,12 @@ from discord_bot_wefi.bot.database.models import UserModel, UserActivityModel
 from discord_bot_wefi.bot.misc.config import COGS_ACTIVITY_MESSAGE_EXPIRATION_TIME, BotLoggerName
 from discord_bot_wefi.bot.misc.util import minutes_converter
 
-
 logger = getLogger(BotLoggerName)
 
 DATE_COLUMN_NAME = 'ㅤㅤDate\ndd/mm/yyyy'
 MEMBER_COLUMN_NAME = 'Member\nㅤ'
 TIME_COLUMN_NAME = 'Time\nㅤ'
+
 
 class UserActivity(Cog):
     def __init__(self, bot: Bot, msg_exp_time=60):
@@ -31,7 +33,8 @@ class UserActivity(Cog):
             self.msg_exp_time = msg_exp_time
 
     def format_time(self, time):
-        return list(map(minutes_converter,time))
+        return list(map(minutes_converter, time))
+
     # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 
     async def someone_activity_lasts_btn_callback(self, interaction):
@@ -124,8 +127,8 @@ class UserActivity(Cog):
         async def everyone_activity_today_btn_callback(interaction):
             today_date = datetime.strptime(datetime.strftime(
                 datetime.today(), '%d/%m/%Y'), '%d/%m/%Y')
-            user_activity = session.query(UserActivityModel).filter_by(
-                date=today_date).limit(25).all()
+            user_activity = session.query(UserActivityModel).filter_by(date=today_date).order_by(
+                UserActivityModel.minutes_in_voice_channels.desc()).limit(25).all()
             if not user_activity:
                 return await interaction.response.send_message('Can`t find activity in the database :(')
 
@@ -141,12 +144,13 @@ class UserActivity(Cog):
                 description='This report shows activity in voice channels.', color=self.report_color)
             embed.add_field(name=MEMBER_COLUMN_NAME, value='\n'.join(
                 results_usernames), inline=True)
-            embed.add_field(name=TIME_COLUMN_NAME, value='\n'.join(self.format_time(results_minutes_in_voice_channels)), inline=True)
+            embed.add_field(name=TIME_COLUMN_NAME, value='\n'.join(self.format_time(results_minutes_in_voice_channels)),
+                            inline=True)
 
             return await interaction.response.send_message(embed=embed)
 
         async def everyone_activity_top_for_all_time_btn_callback(interaction):
-            user_activity = session.query(UserActivityModel).filter_by().order_by(
+            user_activity = session.query(UserActivityModel).order_by(
                 UserActivityModel.minutes_in_voice_channels.desc()).limit(25).all()
             if not user_activity:
                 return await interaction.response.send_message('Can`t find your activity in the database :(')
@@ -169,35 +173,29 @@ class UserActivity(Cog):
                             value='\n'.join(results_date), inline=True)
             embed.add_field(name=MEMBER_COLUMN_NAME, value='\n'.join(
                 results_usernames), inline=True)
-            embed.add_field(name=TIME_COLUMN_NAME, value='\n'.join(self.format_time(results_minutes_in_voice_channels)), inline=True)
+            embed.add_field(name=TIME_COLUMN_NAME, value='\n'.join(self.format_time(results_minutes_in_voice_channels)),
+                            inline=True)
 
             return await interaction.response.send_message(embed=embed)
 
         async def everyone_activity_summary_btn_callback(interaction):
-
-            users_activity = session.query(UserActivityModel).order_by(
-                UserActivityModel.date.desc(), UserActivityModel.minutes_in_voice_channels.desc()).all()
-            users_ids_to_sum = []
-            for user_activity in users_activity:
-                if user_activity.user_id not in users_ids_to_sum:
-                    users_ids_to_sum.append(user_activity.user_id)
+            users_activity = session.query(UserActivityModel,
+                                           func.sum(UserActivityModel.minutes_in_voice_channels),
+                                           func.min(UserActivityModel.date),
+                                           func.max(UserActivityModel.date)
+                                           ).group_by(UserActivityModel.user_id).order_by(
+                func.sum(UserActivityModel.minutes_in_voice_channels).desc()).all()
 
             results_date = []
             results_usernames = []
             results_minutes_in_voice_channels = []
 
-            for user_id in users_ids_to_sum:
-                user = session.query(UserModel).filter_by(id=user_id).first()
-                user_activity = session.query(func.sum(
-                    UserActivityModel.minutes_in_voice_channels)).filter_by(user_id=user_id)[0][0]
-                user_activity_period_start = session.query(func.min(UserActivityModel.date)).filter_by(
-                    user_id=user_id).first()
-                user_activity_period_end = session.query(func.max(UserActivityModel.date)).filter_by(
-                    user_id=user_id).order_by(UserActivityModel.date.desc()).first()
-                results_date.append(f'{datetime.strftime(user_activity_period_start[0], "%d/%m/%Y")} - '
-                                    f'{datetime.strftime(user_activity_period_end[0], "%d/%m/%Y")}')
+            for user_obj, user_activity_time, period_start, period_end in users_activity:
+                user = user_obj.user
+                results_date.append(f'{datetime.strftime(period_start, "%d/%m/%Y")} - '
+                                    f'{datetime.strftime(period_end, "%d/%m/%Y")}')
                 results_usernames.append(user.username)
-                results_minutes_in_voice_channels.append(str(user_activity))
+                results_minutes_in_voice_channels.append(str(user_activity_time))
 
             embed = Embed(
                 title='Summary activity report',
@@ -207,14 +205,15 @@ class UserActivity(Cog):
                             value='\n'.join(results_date), inline=True)
             embed.add_field(name=MEMBER_COLUMN_NAME, value='\n'.join(
                 results_usernames), inline=True)
-            embed.add_field(name=TIME_COLUMN_NAME, value='\n'.join(self.format_time(results_minutes_in_voice_channels)), inline=True)
+            embed.add_field(name=TIME_COLUMN_NAME, value='\n'.join(self.format_time(results_minutes_in_voice_channels)),
+                            inline=True)
 
             return await interaction.response.send_message(embed=embed)
 
         async def everyone_activity_lasts_btn_callback(interaction):
-
             user_activity = session.query(UserActivityModel).order_by(
-                UserActivityModel.date.desc()).limit(25).all()
+                UserActivityModel.date.desc(),
+                UserActivityModel.minutes_in_voice_channels.desc()).limit(25).all()
 
             if not user_activity:
                 return await interaction.response.send_message(
@@ -239,7 +238,8 @@ class UserActivity(Cog):
                             value='\n'.join(results_date), inline=True)
             embed.add_field(name=MEMBER_COLUMN_NAME, value='\n'.join(
                 results_usernames), inline=True)
-            embed.add_field(name=TIME_COLUMN_NAME, value='\n'.join(self.format_time(results_minutes_in_voice_channels)), inline=True)
+            embed.add_field(name=TIME_COLUMN_NAME, value='\n'.join(self.format_time(results_minutes_in_voice_channels)),
+                            inline=True)
 
             return await interaction.response.send_message(embed=embed)
 
@@ -365,20 +365,16 @@ class UserActivity(Cog):
         await asyncio.sleep(self.msg_exp_time)
         await msg_response.delete()
 
-    @nextcord.slash_command(name='activity', description='12345 text description')
-    # @commands.command(name='activity')
-    async def activity_voice_channels_check(self, ctx, user_to_check=None):
+    @nextcord.slash_command(name='activity', description='text description')
+    async def activity_voice_channels_check(self, ctx,
+                                            user: Member = SlashOption(description="Your number", required=False)):
         await self.bot.wait_until_ready()
+
         self.ctx = ctx
-        self.user_to_check = user_to_check
+        self.user_to_check = user
 
-        if user_to_check:
+        if isinstance(self.user_to_check, Member):
             try:
-                self.selected_user_id = int(self.user_to_check.replace(
-                    '@', '').replace('<', '').replace('>', ''))
-                self.user_to_check = self.ctx.guild.get_member(
-                    self.selected_user_id)
-
                 someone_activity_lasts_btn = Button(
                     label='Lasts', style=ButtonStyle.blurple)
                 someone_activity_top_for_all_time_btn = Button(
@@ -395,12 +391,12 @@ class UserActivity(Cog):
                 myview.add_item(someone_activity_top_for_all_time_btn)
                 myview.add_item(someone_activity_summary_btn)
 
-                msg_response = await ctx.send(f'Activity for user {self.user_to_check.name}', view=myview)
+                msg_response = await ctx.send(f'Activity for user **{self.user_to_check.name}**', view=myview)
                 await asyncio.sleep(self.msg_exp_time)
                 await msg_response.delete()
 
             except Exception:
-                return await self.ctx.reply('The member parameter is incorrect. Select a person as "**@name**"')
+                return await ctx.send('The member parameter is incorrect. Select a person as "**@name**"')
         else:
 
             my_activity_btn = Button(
