@@ -179,30 +179,23 @@ class UserActivity(Cog):
             return await interaction.response.send_message(embed=embed)
 
         async def everyone_activity_summary_btn_callback(interaction):
-
-            users_activity = session.query(UserActivityModel).order_by(
-                UserActivityModel.date.desc(), UserActivityModel.minutes_in_voice_channels.desc()).all()
-            users_ids_to_sum = []
-            for user_activity in users_activity:
-                if user_activity.user_id not in users_ids_to_sum:
-                    users_ids_to_sum.append(user_activity.user_id)
+            users_activity = session.query(UserActivityModel,
+                                           func.sum(UserActivityModel.minutes_in_voice_channels),
+                                           func.min(UserActivityModel.date),
+                                           func.max(UserActivityModel.date)
+                                           ).group_by(UserActivityModel.user_id).order_by(
+                func.sum(UserActivityModel.minutes_in_voice_channels).desc()).all()
 
             results_date = []
             results_usernames = []
             results_minutes_in_voice_channels = []
 
-            for user_id in users_ids_to_sum:
-                user = session.query(UserModel).filter_by(id=user_id).first()
-                user_activity = session.query(func.sum(
-                    UserActivityModel.minutes_in_voice_channels)).filter_by(user_id=user_id)[0][0]
-                user_activity_period_start = session.query(func.min(UserActivityModel.date)).filter_by(
-                    user_id=user_id).first()
-                user_activity_period_end = session.query(func.max(UserActivityModel.date)).filter_by(
-                    user_id=user_id).order_by(UserActivityModel.date.desc()).first()
-                results_date.append(f'{datetime.strftime(user_activity_period_start[0], "%d/%m/%Y")} - '
-                                    f'{datetime.strftime(user_activity_period_end[0], "%d/%m/%Y")}')
+            for user_obj, user_activity_time, period_start, period_end in users_activity:
+                user = user_obj.user
+                results_date.append(f'{datetime.strftime(period_start, "%d/%m/%Y")} - '
+                                    f'{datetime.strftime(period_end, "%d/%m/%Y")}')
                 results_usernames.append(user.username)
-                results_minutes_in_voice_channels.append(str(user_activity))
+                results_minutes_in_voice_channels.append(str(user_activity_time))
 
             embed = Embed(
                 title='Summary activity report',
