@@ -61,7 +61,19 @@ class UserActivityTask(Cog):
 
         return online_members_in_voice_chats
 
-    @tasks.loop(seconds=60)
+    def test(self):
+        self.guild_data = self.bot.guilds[0]
+        self.voice_channels = self.guild_data.voice_channels
+
+        response = []
+
+        for channel in self.voice_channels:
+            members = channel.members
+            for member in members:
+                response.append(member)
+        return response
+
+    @tasks.loop(seconds=10)
     @commands.Cog.listener()
     async def activity_voice_channels_check(self, *args):
         await self.bot.wait_until_ready()
@@ -69,6 +81,7 @@ class UserActivityTask(Cog):
         today_date = datetime.strptime(datetime.strftime(
             datetime.today(), '%d/%m/%Y'), '%d/%m/%Y')
 
+        # Every day activity report
         if not self.date_for_report == today_date:
             if ID_TEXT_CHANNEL_FOR_REPORT_ACTIVITY:
                 channel_report = self.bot.get_channel(
@@ -110,6 +123,12 @@ class UserActivityTask(Cog):
 
         online_members_in_voice_chats = await self.get_members_in_voice_channels()
 
+        # for user in online_members_in_voice_chats:
+        #     await user.edit(mute=True)
+
+        import ipdb;
+        ipdb.set_trace(context=5)
+
         for member in online_members_in_voice_chats:
             user = session.query(UserModel).filter_by(
                 discord_id=member.id).first()
@@ -123,7 +142,6 @@ class UserActivityTask(Cog):
                 date=today_date, minutes_in_voice_channels=1, user_id=user.id)
             session.add(user_activity)
             session.commit()
-
 
 
 def register_cog(bot: Bot) -> None:
