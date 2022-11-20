@@ -89,8 +89,9 @@ class UserActivityTask(Cog):
 
                 users_names = []
                 users_activity = []
-                active_users_for_today = session.query(
-                    UserActivityModel).filter_by(date=self.date_for_report).all()
+                active_users_for_today = session.query(UserActivityModel).filter_by(
+                    date=self.date_for_report).order_by(UserActivityModel.minutes_in_voice_channels.desc()).all()
+
                 if active_users_for_today:
                     for user in active_users_for_today:
                         users_names.append(user.user.username)
@@ -116,6 +117,7 @@ class UserActivityTask(Cog):
 
                 await channel_report.send(embed=embed)
                 self.date_for_report = today_date
+        # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
         if self.role_id_for_activity_track:
             self.role_id_for_activity_track = self.bot.guilds[0].get_role(
