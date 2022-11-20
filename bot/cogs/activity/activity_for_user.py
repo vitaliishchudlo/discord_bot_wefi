@@ -245,8 +245,6 @@ class UserActivity(Cog):
                 results_usernames), inline=True)
             embed.add_field(name=TIME_COLUMN_NAME, value='\n'.join(self.format_time(results_minutes_in_voice_channels)),
                             inline=True)
-            import ipdb;
-            ipdb.set_trace(context=5)
 
             return await interaction.response.send_message(embed=embed)
 
