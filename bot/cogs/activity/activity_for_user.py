@@ -13,12 +13,12 @@ from discord_bot_wefi.bot.database.models import UserModel, UserActivityModel
 from discord_bot_wefi.bot.misc.config import COGS_ACTIVITY_MESSAGE_EXPIRATION_TIME, BotLoggerName
 from discord_bot_wefi.bot.misc.util import minutes_converter
 
-
 logger = getLogger(BotLoggerName)
 
 DATE_COLUMN_NAME = 'ㅤㅤDate\ndd/mm/yyyy'
 MEMBER_COLUMN_NAME = 'Member\nㅤ'
 TIME_COLUMN_NAME = 'Time\nㅤ'
+
 
 class UserActivity(Cog):
     def __init__(self, bot: Bot, msg_exp_time=60):
@@ -31,7 +31,8 @@ class UserActivity(Cog):
             self.msg_exp_time = msg_exp_time
 
     def format_time(self, time):
-        return list(map(minutes_converter,time))
+        return list(map(minutes_converter, time))
+
     # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 
     async def someone_activity_lasts_btn_callback(self, interaction):
@@ -141,8 +142,8 @@ class UserActivity(Cog):
                 description='This report shows activity in voice channels.', color=self.report_color)
             embed.add_field(name=MEMBER_COLUMN_NAME, value='\n'.join(
                 results_usernames), inline=True)
-            embed.add_field(name=TIME_COLUMN_NAME, value='\n'.join(self.format_time(results_minutes_in_voice_channels)), inline=True)
-            import ipdb; ipdb.set_trace(context=5)
+            embed.add_field(name=TIME_COLUMN_NAME, value='\n'.join(self.format_time(results_minutes_in_voice_channels)),
+                            inline=True)
 
             return await interaction.response.send_message(embed=embed)
 
@@ -170,7 +171,8 @@ class UserActivity(Cog):
                             value='\n'.join(results_date), inline=True)
             embed.add_field(name=MEMBER_COLUMN_NAME, value='\n'.join(
                 results_usernames), inline=True)
-            embed.add_field(name=TIME_COLUMN_NAME, value='\n'.join(self.format_time(results_minutes_in_voice_channels)), inline=True)
+            embed.add_field(name=TIME_COLUMN_NAME, value='\n'.join(self.format_time(results_minutes_in_voice_channels)),
+                            inline=True)
 
             return await interaction.response.send_message(embed=embed)
 
@@ -208,14 +210,15 @@ class UserActivity(Cog):
                             value='\n'.join(results_date), inline=True)
             embed.add_field(name=MEMBER_COLUMN_NAME, value='\n'.join(
                 results_usernames), inline=True)
-            embed.add_field(name=TIME_COLUMN_NAME, value='\n'.join(self.format_time(results_minutes_in_voice_channels)), inline=True)
+            embed.add_field(name=TIME_COLUMN_NAME, value='\n'.join(self.format_time(results_minutes_in_voice_channels)),
+                            inline=True)
 
             return await interaction.response.send_message(embed=embed)
 
         async def everyone_activity_lasts_btn_callback(interaction):
-
             user_activity = session.query(UserActivityModel).order_by(
-                UserActivityModel.date.desc()).limit(25).all()
+                UserActivityModel.date.desc(),
+                UserActivityModel.minutes_in_voice_channels.desc()).limit(25).all()
 
             if not user_activity:
                 return await interaction.response.send_message(
@@ -240,7 +243,10 @@ class UserActivity(Cog):
                             value='\n'.join(results_date), inline=True)
             embed.add_field(name=MEMBER_COLUMN_NAME, value='\n'.join(
                 results_usernames), inline=True)
-            embed.add_field(name=TIME_COLUMN_NAME, value='\n'.join(self.format_time(results_minutes_in_voice_channels)), inline=True)
+            embed.add_field(name=TIME_COLUMN_NAME, value='\n'.join(self.format_time(results_minutes_in_voice_channels)),
+                            inline=True)
+            import ipdb;
+            ipdb.set_trace(context=5)
 
             return await interaction.response.send_message(embed=embed)
 
