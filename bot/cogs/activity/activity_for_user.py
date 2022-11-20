@@ -4,7 +4,9 @@ from logging import getLogger
 
 import nextcord
 from nextcord import Color, ButtonStyle, Embed
+from nextcord import SlashOption
 from nextcord.ext.commands import Bot, Cog
+from nextcord.member import Member
 from nextcord.ui import Button, View
 from sqlalchemy import func
 
@@ -370,20 +372,16 @@ class UserActivity(Cog):
         await asyncio.sleep(self.msg_exp_time)
         await msg_response.delete()
 
-    @nextcord.slash_command(name='activity', description='12345 text description')
-    # @commands.command(name='activity')
-    async def activity_voice_channels_check(self, ctx, user_to_check=None):
+    @nextcord.slash_command(name='activity', description='text description')
+    async def activity_voice_channels_check(self, ctx,
+                                            user: Member = SlashOption(description="Your number", required=False)):
         await self.bot.wait_until_ready()
+
         self.ctx = ctx
-        self.user_to_check = user_to_check
+        self.user_to_check = user
 
-        if user_to_check:
+        if isinstance(self.user_to_check, Member):
             try:
-                self.selected_user_id = int(self.user_to_check.replace(
-                    '@', '').replace('<', '').replace('>', ''))
-                self.user_to_check = self.ctx.guild.get_member(
-                    self.selected_user_id)
-
                 someone_activity_lasts_btn = Button(
                     label='Lasts', style=ButtonStyle.blurple)
                 someone_activity_top_for_all_time_btn = Button(
@@ -400,12 +398,12 @@ class UserActivity(Cog):
                 myview.add_item(someone_activity_top_for_all_time_btn)
                 myview.add_item(someone_activity_summary_btn)
 
-                msg_response = await ctx.send(f'Activity for user {self.user_to_check.name}', view=myview)
+                msg_response = await ctx.send(f'Activity for user **{self.user_to_check.name}**', view=myview)
                 await asyncio.sleep(self.msg_exp_time)
                 await msg_response.delete()
 
             except Exception:
-                return await self.ctx.reply('The member parameter is incorrect. Select a person as "**@name**"')
+                return await ctx.send('The member parameter is incorrect. Select a person as "**@name**"')
         else:
 
             my_activity_btn = Button(
