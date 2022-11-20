@@ -59,3 +59,35 @@ class Captcha:
         image.write(self._code, self.file_path)
 
         return File(self.file_path)
+
+
+def minutes_converter(given_minutes):
+    """
+        result = {
+            'hours': None,
+            'minutes': None
+        }
+        given_minutes = int(given_minutes)
+        if given_minutes < 60:
+            if formatted_srt:
+                return f'{given_minutes} min.'
+            result['minutes'] = str(given_minutes)
+            return result
+        hours = str(given_minutes / 60).split('.')[0]
+        minutes = str(given_minutes % 60)
+
+        result['hours'] = hours
+        result['minutes'] = minutes
+
+        if formatted_srt:
+            return f'{hours} h. {minutes} min.'
+        return result
+        """
+
+    given_minutes = int(given_minutes)
+    if given_minutes < 60:
+        return f'{given_minutes} min.'
+    hours = str(given_minutes / 60).split('.')[0]
+    minutes = str(given_minutes % 60)
+
+    return f'{hours} h. {minutes} min.'

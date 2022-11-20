@@ -38,3 +38,5 @@ COGS_ACTIVITY_MESSAGE_EXPIRATION_TIME = read_config_yaml().get(
 
 
 BotLoggerName = 'BotLogger'
+
+timezone = read_config_yaml().get('timezone')

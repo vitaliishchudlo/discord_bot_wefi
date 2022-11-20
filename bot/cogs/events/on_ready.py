@@ -7,10 +7,11 @@ from nextcord.ext.commands import Bot
 from nextcord.ext.commands import Cog
 
 from discord_bot_wefi.bot.database import session, UserModel
+from discord_bot_wefi.bot.misc.config import BotLoggerName
 from discord_bot_wefi.bot.misc.util import BColors
 from discord_bot_wefi.bot.tasks.runner import start_all_loops
 
-logger = getLogger('BotLogger')
+logger = getLogger(BotLoggerName)
 
 
 class OnReady(Cog):

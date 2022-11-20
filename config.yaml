@@ -1,5 +1,5 @@
 database:
-  PATH_DATABASE: 'bot/database/database.sqlite'
+  PATH_DATABASE: "bot/database/database.sqlite"
 
 roles_ids:
   other: 952282700780281938
@@ -13,7 +13,7 @@ events:
   on_member_join:
     id_text_channel_for_welcome: 952278528458641438
     captchas_saving_path: "bot/cogs/events/captchas"
-    captcha_prefix: 'WeFi'
+    captcha_prefix: "WeFi"
 
 tasks:
   activity:
@@ -23,3 +23,7 @@ tasks:
 cogs:
   activity:
     message_expiration_time: 5
+
+# Format like: "Europe/Kyiv"
+timezone: "Europe/Kyiv"
+
