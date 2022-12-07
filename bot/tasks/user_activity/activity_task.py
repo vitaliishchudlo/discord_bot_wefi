@@ -1,7 +1,9 @@
+import os
+import shutil
 from datetime import datetime
+from pathlib import Path
 
-from nextcord import Color
-from nextcord import Embed
+from nextcord import Embed, File, Color
 from nextcord.ext import commands, tasks
 from nextcord.ext.commands import Cog, Bot
 
@@ -61,17 +63,24 @@ class UserActivityTask(Cog):
 
         return online_members_in_voice_chats
 
-    def test(self):
-        self.guild_data = self.bot.guilds[0]
-        self.voice_channels = self.guild_data.voice_channels
+    async def get_today_db_file_for_report(self):
+        DB_CORE_DIR = f'{Path().absolute()}/bot/database'
+        DB_ARCHIVE_DIR = f'{DB_CORE_DIR}/archive'
+        if not os.path.isdir(DB_ARCHIVE_DIR):
+            os.mkdir(DB_ARCHIVE_DIR)
 
-        response = []
+        """
+        -Change next to the PATH_DATABASE from conf.yaml;
+        - Find in project where it can meet too;
+        - Fix it like: 'DB_NAME' only;
+        """
 
-        for channel in self.voice_channels:
-            members = channel.members
-            for member in members:
-                response.append(member)
-        return response
+        if os.path.isfile(f'{DB_CORE_DIR}/database.sqlite'):
+            today_formatted_date = datetime.strftime(datetime.today(), '%d_%m_%Y')
+            src_file = f'{DB_CORE_DIR}/database.sqlite'
+            dst_file = f'{DB_ARCHIVE_DIR}/db_{today_formatted_date}.sqlite'
+            shutil.copy2(src_file, dst_file)
+            return File(dst_file)
 
     @tasks.loop(seconds=60)
     @commands.Cog.listener()
@@ -84,7 +93,7 @@ class UserActivityTask(Cog):
         # Every day activity report
         if not self.date_for_report == today_date:
             if ID_TEXT_CHANNEL_FOR_REPORT_ACTIVITY:
-                channel_report = self.bot.get_channel(
+                self.channel_report = self.bot.get_channel(
                     ID_TEXT_CHANNEL_FOR_REPORT_ACTIVITY)
 
                 users_names = []
@@ -115,7 +124,9 @@ class UserActivityTask(Cog):
                 embed.add_field(name='Minutes', value='\n'.join(
                     users_activity), inline=True)
 
-                await channel_report.send(embed=embed)
+                self.db_file_for_report = await self.get_today_db_file_for_report()
+
+                await self.channel_report.send(embed=embed, file=self.db_file_for_report)
                 self.date_for_report = today_date
         # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
