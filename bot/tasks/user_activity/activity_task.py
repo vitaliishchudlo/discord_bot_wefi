@@ -86,7 +86,7 @@ class UserActivityTask(Cog):
             shutil.copy2(src_file, dst_file)
             return File(dst_file)
 
-    @tasks.loop(seconds=10)
+    @tasks.loop(seconds=60)
     @commands.Cog.listener()
     async def activity_voice_channels_check(self, *args):
         await self.bot.wait_until_ready()
