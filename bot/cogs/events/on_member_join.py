@@ -15,6 +15,12 @@ class OnMemberJoin(Cog):
     def __init__(self, bot: Bot):
         self.bot = bot
 
+    def save_user_to_db(self, member):
+        user = UserModel(discord_id=member.id, username=member.name, discriminator=member.discriminator)
+        session.add(user)
+        session.commit()
+        return user
+
     @commands.Cog.listener()
     async def on_member_join(self, member):
         await self.bot.wait_until_ready()
@@ -27,6 +33,9 @@ class OnMemberJoin(Cog):
         captcha.save_picture()
 
         user = session.query(UserModel).filter_by(discord_id=member.id).first()
+        if not user:
+            user = self.save_user_to_db(member)
+
         user_captcha = session.query(
             UserCaptchaModel).filter_by(user_id=user.id).first()
         if not user_captcha:
