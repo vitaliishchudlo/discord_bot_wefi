@@ -1,6 +1,7 @@
 import os
 import shutil
 from datetime import datetime
+from logging import getLogger
 from pathlib import Path
 
 from nextcord import Embed, File, Color
@@ -10,8 +11,11 @@ from nextcord.ext.commands import Cog, Bot
 from discord_bot_wefi.bot.database import session
 from discord_bot_wefi.bot.database.models.users import UserModel
 from discord_bot_wefi.bot.database.models.users_activity import UserActivityModel
+from discord_bot_wefi.bot.misc.config import BotLoggerName
 from discord_bot_wefi.bot.misc.config import ID_ROLE_FOR_ACTIVITY_TRACK, \
     ID_TEXT_CHANNEL_FOR_REPORT_ACTIVITY
+
+logger = getLogger(BotLoggerName)
 
 
 class UserActivityTask(Cog):
@@ -86,6 +90,8 @@ class UserActivityTask(Cog):
     @commands.Cog.listener()
     async def activity_voice_channels_check(self, *args):
         await self.bot.wait_until_ready()
+
+        logger.info('Saving data about activity')
 
         today_date = datetime.strptime(datetime.strftime(
             datetime.today(), '%d/%m/%Y'), '%d/%m/%Y')
