@@ -7,6 +7,7 @@ from discord_bot_wefi.bot.misc.config import BotLoggerName
 
 
 class BotLogger:
+
     def __init__(self):
         self.logs_dir = f'{Path().absolute()}/logs'
         if not path.isdir(self.logs_dir):
