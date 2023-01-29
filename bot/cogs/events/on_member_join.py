@@ -59,7 +59,7 @@ class MemberVerification(commands.Cog):
         self.bot = bot
 
     @nextcord.slash_command(name='reg', description='Registration. Input code')
-    async def register(self, ctx, code: str):
+    async def reg(self, ctx, code: str):
         await self.bot.wait_until_ready()
 
         if not code:
