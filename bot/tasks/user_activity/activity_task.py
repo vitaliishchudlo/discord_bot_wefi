@@ -1,6 +1,6 @@
 import os
 import shutil
-from datetime import datetime
+from datetime import datetime, timedelta
 from logging import getLogger
 from pathlib import Path
 
@@ -108,6 +108,7 @@ class UserActivityTask(Cog):
                     date=self.date_for_report).order_by(UserActivityModel.minutes_in_voice_channels.desc()).all()
 
                 if active_users_for_today:
+                    # todo Report view as like 3hours 21 minutes not like "178 minutes"
                     for user in active_users_for_today:
                         users_names.append(user.user.username)
                         users_activity.append(
@@ -123,17 +124,22 @@ class UserActivityTask(Cog):
                     self.report_color = Color.teal().blue()
 
                 embed = Embed(
-                    title=f"Activity report for {datetime.strftime(self.date_for_report, '%d/%m/%Y')}",
+                    title=f"Activity report for {datetime.strftime(self.date_for_report - timedelta(days=1), '%d/%m/%Y')}",
                     description='This report shows activity in voice channels.', color=self.report_color)
                 embed.add_field(name='User', value='\n'.join(
                     users_names), inline=True)
                 embed.add_field(name='Minutes', value='\n'.join(
                     users_activity), inline=True)
-
-                self.db_file_for_report = await self.get_today_db_file_for_report()
-
-                await self.channel_report.send(embed=embed, file=self.db_file_for_report)
+                if active_users_for_today:
+                    self.db_file_for_report = await self.get_today_db_file_for_report()
+                    await self.channel_report.send(embed=embed, file=self.db_file_for_report)
+                else:
+                    await self.channel_report.send(embed=embed)
                 self.date_for_report = today_date
+            else:
+                # todo logs about not entered ID_TEXT_CHANNEL_FOR_REPORT_ACTIVITY
+                pass
+
         # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
         if self.role_id_for_activity_track:
