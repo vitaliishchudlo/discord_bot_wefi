@@ -1,6 +1,6 @@
 import os
 import shutil
-from datetime import datetime
+from datetime import datetime, timedelta
 from logging import getLogger
 from pathlib import Path
 
@@ -121,9 +121,8 @@ class UserActivityTask(Cog):
                     self.report_color = Color.teal().yellow()
                 else:
                     self.report_color = Color.teal().blue()
-
                 embed = Embed(
-                    title=f"Activity report for {datetime.strftime(self.date_for_report, '%d/%m/%Y')}",
+                    title=f"Activity report for {datetime.strftime(self.date_for_report - timedelta(days=1), '%d/%m/%Y')}",
                     description='This report shows activity in voice channels.', color=self.report_color)
                 embed.add_field(name='User', value='\n'.join(
                     users_names), inline=True)
