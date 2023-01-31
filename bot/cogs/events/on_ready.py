@@ -45,7 +45,7 @@ class OnReady(Cog):
 
         columns = shutil.get_terminal_size().columns
         columns = columns // 15 + columns
-        print(f'{BColors.BOLD}{BColors.OKGREEN}'
+        print('\n', f'{BColors.BOLD}{BColors.OKGREEN}'
               'The Bot has been successfully launched :-)'
               f'{BColors.ENDC}'.center(columns))
 

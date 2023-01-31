@@ -1,5 +1,6 @@
-import os, sys, time
-
+import os
+import sys
+import time
 
 from nextcord import Intents, Activity, ActivityType
 from nextcord.ext.commands import Bot
@@ -23,7 +24,8 @@ def start_bot():
     print('Time: ', time.strftime('%X %x %Z'))
 
     # Checking whether the user has added a bot token
-    if not env.BOT_TOKEN:
+    token = env.BOT_TOKEN
+    if not token or token == 'None':
         print(
             '[ERROR]: Fill the BOT_TOKEN variable in the .env file (example in .env.tmp).')
         exit(-1)
