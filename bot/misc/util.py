@@ -1,11 +1,11 @@
 import os
 import random
+from abc import ABC
 
 from captcha.image import ImageCaptcha
 from nextcord import File
 
 from discord_bot_wefi.bot.misc.config import CAPTCHAS_SAVING_PATH, CAPTCHA_PREFIX
-from abc import ABC
 
 
 class BColors(ABC):
@@ -92,6 +92,11 @@ def minutes_converter(given_minutes):
     if given_minutes < 60:
         return f'{given_minutes} min.'
     hours = str(given_minutes / 60).split('.')[0]
-    minutes = str(given_minutes % 60)
 
-    return f'{hours} h. {minutes} min.'
+    if int(hours) < 24:
+        minutes = str(given_minutes % 60)
+        return f'{hours} h. {minutes} min.'
+
+    days = int(hours) // 24
+    minutes = str(given_minutes % 60)
+    return f'{str(days)} d. {str(hours)} h. {str(minutes)} min.'

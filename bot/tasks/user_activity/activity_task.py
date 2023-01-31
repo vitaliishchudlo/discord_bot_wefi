@@ -133,10 +133,11 @@ class UserActivityTask(Cog):
                     await self.channel_report.send(embed=embed, file=self.db_file_for_report)
                 else:
                     await self.channel_report.send(embed=embed)
+                logger.info(f'Creating daily activity report - {dict(zip(users_names, users_activity))}')
                 self.date_for_report = today_date
             else:
-                # todo logs about not entered ID_TEXT_CHANNEL_FOR_REPORT_ACTIVITY
-                pass
+                logger.warning(
+                    'You did not fill in the variable "ID_TEXT_CHANNEL_FOR_REPORT_ACTIVITY" in the config file')
 
         # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -145,7 +146,6 @@ class UserActivityTask(Cog):
                 self.role_id_for_activity_track)
 
         online_members_in_voice_chats = await self.get_members_in_voice_channels()
-
         for member in online_members_in_voice_chats:
             user = session.query(UserModel).filter_by(
                 discord_id=member.id).first()
@@ -159,6 +159,7 @@ class UserActivityTask(Cog):
                 date=today_date, minutes_in_voice_channels=1, user_id=user.id)
             session.add(user_activity)
             session.commit()
+        logger.info(f'Saving data activity for users: {", ".join([x.name for x in online_members_in_voice_chats])}')
 
 
 def register_cog(bot: Bot) -> None:
