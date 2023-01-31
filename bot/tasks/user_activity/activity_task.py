@@ -91,8 +91,6 @@ class UserActivityTask(Cog):
     async def activity_voice_channels_check(self, *args):
         await self.bot.wait_until_ready()
 
-        logger.info('Saving data about activity')
-
         today_date = datetime.strptime(datetime.strftime(
             datetime.today(), '%d/%m/%Y'), '%d/%m/%Y')
 

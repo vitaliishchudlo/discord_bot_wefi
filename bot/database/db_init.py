@@ -1,9 +1,14 @@
+from logging import getLogger
+
 from sqlalchemy import event, create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
 from discord_bot_wefi.bot.misc import config as conf
+from discord_bot_wefi.bot.misc.config import BotLoggerName
 from discord_bot_wefi.bot.misc.util import BColors
+
+logger = getLogger(BotLoggerName)
 
 engine = create_engine(f'sqlite:///{conf.PATH_DATABASE}')
 Session = sessionmaker(bind=engine)
@@ -14,14 +19,15 @@ Base = declarative_base()
 
 @event.listens_for(Base.metadata, 'after_create')
 def receive_after_create(target, connection, tables, **kw):
-    "listen for the 'after_create' event"
-    print(f'{BColors.SYSTEM}{BColors.BOLD}Running migrations:{BColors.ENDC}')
+    """
+    listen for the 'after_create' event
+    """
+    logger.info('Starting migrations...')
     if tables:
         for x in tables:
-            print(
-                f'      Applying table: {x.name}...{BColors.OKGREEN}OK{BColors.ENDC}')
+            logger.info(f'Applying table: {x.name}... OK')
     else:
-        print(f'{BColors.SYSTEM}{BColors.WARNING}    All migrations is up to date!{BColors.ENDC}')
+        logger.warning('All migrations is up to date!')
 
 
 def create_db():

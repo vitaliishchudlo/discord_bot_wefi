@@ -1,6 +1,7 @@
 import os
 import sys
 import time
+from logging import getLogger
 
 from nextcord import Intents, Activity, ActivityType
 from nextcord.ext.commands import Bot
@@ -9,8 +10,12 @@ from discord_bot_wefi.bot.cogs import register_all_cogs
 from discord_bot_wefi.bot.database.db_init import create_db
 from discord_bot_wefi.bot.misc import config as conf
 from discord_bot_wefi.bot.misc import env
+from discord_bot_wefi.bot.misc.config import BotLoggerName
+from discord_bot_wefi.bot.misc.util import BColors
 from .bot_logger import BotLogger
-from bot.misc.util import BColors
+
+logger = getLogger(BotLoggerName)
+
 
 def start_bot():
     # Init logger for bot
@@ -21,13 +26,12 @@ def start_bot():
         os.environ['TZ'] = conf.timezone
         time.tzset()
 
-    print(f'{BColors.SYSTEM}Time: ', time.strftime('%X %x %Z'))
+    logger.info(f'Time: {time.strftime("%X %x %Z")}')
 
     # Checking whether the user has added a bot token
     token = env.BOT_TOKEN
     if not token or token == 'None':
-        print(
-            '[ERROR]: Fill the BOT_TOKEN variable in the .env file (example in .env.tmp).')
+        logger.error('You need to fill BOT_TOKEN variable in the .env file (example in .env.tmp)')
         exit(-1)
 
     """
