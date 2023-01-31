@@ -10,6 +10,9 @@ from discord_bot_wefi.bot.misc.util import BColors
 from discord_bot_wefi.bot.tasks.runner import start_all_loops
 
 
+from logging import getLogger
+from discord_bot_wefi.bot.misc.config import BotLoggerName
+logger = getLogger(BotLoggerName)
 
 
 class OnReady(Cog):
@@ -35,7 +38,8 @@ class OnReady(Cog):
             session.add(member_model)
             session.commit()
 
-        return print(f'{BColors.SYSTEM}Initialization users...{BColors.OKGREEN}{BColors.BOLD}OK{BColors.ENDC}')
+        logger.info(f'Initialization users... OK')
+        return
 
     @commands.Cog.listener()
     async def on_ready(self):
@@ -43,12 +47,12 @@ class OnReady(Cog):
 
         start_all_loops(self.bot)
 
-        columns = shutil.get_terminal_size().columns
-        columns = columns // 15 + columns
-        print('\n', f'{BColors.BOLD}{BColors.OKGREEN}'
-              'The Bot has been successfully launched :-)'
-              f'{BColors.ENDC}'.center(columns))
-
+        # columns = shutil.get_terminal_size().columns
+        # columns = columns // 15 + columns
+        logger.info('The Bot has been successfully launched :-)\n')
+        # print('\n', f'{BColors.BOLD}{BColors.OKGREEN}'
+        #       'The Bot has been successfully launched :-)'
+        #       f'{BColors.ENDC}'.center(columns))
         await self.bot.change_presence(activity=Game('Testing'))
 
 

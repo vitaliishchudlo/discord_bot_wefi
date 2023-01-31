@@ -20,6 +20,7 @@ class BColors(ABC):
     UNDERLINE = '\033[4m'
 
     SYSTEM = f'{OKBLUE}{BOLD}[SYSTEM]: {ENDC}'
+    ERROR = f'{FAIL}{BOLD}[SYSTEM]: {ENDC}'
 
 
 class Captcha:

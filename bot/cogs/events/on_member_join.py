@@ -1,3 +1,5 @@
+from logging import getLogger
+
 import nextcord
 from nextcord.ext import commands
 from nextcord.ext.commands import Cog, Bot
@@ -6,8 +8,11 @@ from nextcord.utils import get
 from discord_bot_wefi.bot.database import session
 from discord_bot_wefi.bot.database.models import UserCaptchaModel
 from discord_bot_wefi.bot.database.models import UserModel
+from discord_bot_wefi.bot.misc.config import BotLoggerName
 from discord_bot_wefi.bot.misc.config import ID_TEXT_CHANNEL_FOR_WELCOME, BOT_PREFIX, ID_ROLE_AFTER_VERIFICATION
 from discord_bot_wefi.bot.misc.util import Captcha
+
+logger = getLogger(BotLoggerName)
 
 
 class OnMemberJoin(Cog):
@@ -45,7 +50,9 @@ class OnMemberJoin(Cog):
         else:
             user_captcha.code = captcha.get_code()
         session.commit()
-
+        'User Vitaly joined the server. His Discord ID: 12345, ID in the database: 1235, captcha: 1234'
+        logger.info(
+            f'User {member.name} joined the server; User data: Discord id - {member.id} | ID in the DB - {user.id} | Captcha - {user_captcha.code}')
         await self.welcome_chat.send(
             f'Hey, {member.mention}, welcome to the {self.bot.guilds[0].name} 👋 \n'
             'To get more access, you need to be **verified**.\n\n'

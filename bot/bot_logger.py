@@ -1,4 +1,4 @@
-from logging import getLogger, DEBUG, Formatter
+from logging import getLogger, DEBUG, Formatter, StreamHandler
 from logging.handlers import TimedRotatingFileHandler
 from os import path, mkdir
 from pathlib import Path
@@ -25,14 +25,16 @@ class BotLogger:
         self.logger.propagate = False
         self.logger.setLevel(level=self.logger_level)
 
-        self.formatter = Formatter(
-            f'| %(asctime)s | %(filename)-21s | %(lineno)-3d | %(levelname)s: %(message)s'
-        )
+        self.formatter = Formatter('| %(asctime)s | %(filename)-21s | %(lineno)-3d | %(levelname)s: %(message)s')
 
-        self.time_handler = TimedRotatingFileHandler(self.filename, when='midnight', interval=1)
-        self.time_handler.setFormatter(self.formatter)
-        self.time_handler.setLevel(self.file_handler_level)
-        self.time_handler.suffix = '%Y-%m-%d'
-        self.time_handler.namer = lambda name: name.replace(".log", "") + ".log"
+        self.fileTimeHandler = TimedRotatingFileHandler(self.filename, when='midnight', interval=1)
+        self.fileTimeHandler.setFormatter(self.formatter)
+        self.fileTimeHandler.setLevel(self.file_handler_level)
+        self.fileTimeHandler.suffix = '%Y-%m-%d'
+        self.fileTimeHandler.namer = lambda name: name.replace(".log", "") + ".log"
 
-        self.logger.addHandler(self.time_handler)
+        self.consoleHandler = StreamHandler()
+        self.consoleHandler.setFormatter(self.formatter)
+
+        self.logger.addHandler(self.fileTimeHandler)
+        self.logger.addHandler(self.consoleHandler)
