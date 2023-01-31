@@ -34,7 +34,7 @@ ID_ROLE_AFTER_VERIFICATION = ID_ROLE_OTHER
 
 
 COGS_ACTIVITY_MESSAGE_EXPIRATION_TIME = read_config_yaml().get(
-    'cogs').get('activity').get('message_expiration_time')
+    'cogs').get('activity').get('message_expiration_seconds')
 
 
 BotLoggerName = 'BotLogger'
