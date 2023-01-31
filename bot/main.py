@@ -10,7 +10,7 @@ from discord_bot_wefi.bot.database.db_init import create_db
 from discord_bot_wefi.bot.misc import config as conf
 from discord_bot_wefi.bot.misc import env
 from .bot_logger import BotLogger
-
+from bot.misc.util import BColors
 
 def start_bot():
     # Init logger for bot
@@ -21,7 +21,7 @@ def start_bot():
         os.environ['TZ'] = conf.timezone
         time.tzset()
 
-    print('Time: ', time.strftime('%X %x %Z'))
+    print(f'{BColors.SYSTEM}Time: ', time.strftime('%X %x %Z'))
 
     # Checking whether the user has added a bot token
     token = env.BOT_TOKEN

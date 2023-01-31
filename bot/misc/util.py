@@ -5,9 +5,10 @@ from captcha.image import ImageCaptcha
 from nextcord import File
 
 from discord_bot_wefi.bot.misc.config import CAPTCHAS_SAVING_PATH, CAPTCHA_PREFIX
+from abc import ABC
 
 
-class BColors:
+class BColors(ABC):
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
     OKCYAN = '\033[96m'
@@ -17,6 +18,8 @@ class BColors:
     ENDC = '\033[0m'
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
+
+    SYSTEM = f'{OKBLUE}{BOLD}[SYSTEM]: {ENDC}'
 
 
 class Captcha:

@@ -35,7 +35,7 @@ class OnReady(Cog):
             session.add(member_model)
             session.commit()
 
-        return print(f'Initialization users...{BColors.OKGREEN}{BColors.BOLD}OK{BColors.ENDC}')
+        return print(f'{BColors.SYSTEM}Initialization users...{BColors.OKGREEN}{BColors.BOLD}OK{BColors.ENDC}')
 
     @commands.Cog.listener()
     async def on_ready(self):

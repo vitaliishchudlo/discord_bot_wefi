@@ -15,13 +15,13 @@ Base = declarative_base()
 @event.listens_for(Base.metadata, 'after_create')
 def receive_after_create(target, connection, tables, **kw):
     "listen for the 'after_create' event"
-    print(f'{BColors.BOLD}Running migrations:{BColors.ENDC}')
+    print(f'{BColors.SYSTEM}{BColors.BOLD}Running migrations:{BColors.ENDC}')
     if tables:
         for x in tables:
             print(
-                f'    Applying table: {x.name}...{BColors.OKGREEN}OK{BColors.ENDC}')
+                f'      Applying table: {x.name}...{BColors.OKGREEN}OK{BColors.ENDC}')
     else:
-        print(f'{BColors.WARNING}    All migrations is up to date!{BColors.ENDC}')
+        print(f'{BColors.SYSTEM}{BColors.WARNING}    All migrations is up to date!{BColors.ENDC}')
 
 
 def create_db():
