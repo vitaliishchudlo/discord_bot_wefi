@@ -98,6 +98,6 @@ def minutes_converter(given_minutes):
         return f'{hours} h. {minutes} min.'
 
     days = int(hours) // 24
-    # TODO, HERE IS THE BUG | NEED TO MINUS THE HOURS FROM THE DAYS
+    hours = int(hours) - (int(days) * 24)
     minutes = str(given_minutes % 60)
     return f'{str(days)} d. {str(hours)} h. {str(minutes)} min.'
