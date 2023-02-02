@@ -1,4 +1,10 @@
+from logging import getLogger
+
 import yaml
+
+BotLoggerName = 'BotLogger'
+
+logger = getLogger(BotLoggerName)
 
 
 def read_config_yaml():
@@ -7,7 +13,7 @@ def read_config_yaml():
             response = yaml.safe_load(stream)
             return response
         except yaml.YAMLError as exc:
-            print(exc)
+            logger.error(exc)
 
 
 CONFIG_FILE_PATH = 'config.yaml'
@@ -32,11 +38,7 @@ ID_ROLE_OTHER = read_config_yaml().get('roles_ids').get('other')
 
 ID_ROLE_AFTER_VERIFICATION = ID_ROLE_OTHER
 
-
 COGS_ACTIVITY_MESSAGE_EXPIRATION_TIME = read_config_yaml().get(
     'cogs').get('activity').get('message_expiration_seconds')
-
-
-BotLoggerName = 'BotLogger'
 
 timezone = read_config_yaml().get('timezone')

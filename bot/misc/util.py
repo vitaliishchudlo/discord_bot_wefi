@@ -1,5 +1,6 @@
 import os
 import random
+from abc import ABC
 
 from captcha.image import ImageCaptcha
 from nextcord import File
@@ -7,7 +8,7 @@ from nextcord import File
 from discord_bot_wefi.bot.misc.config import CAPTCHAS_SAVING_PATH, CAPTCHA_PREFIX
 
 
-class BColors:
+class BColors(ABC):
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
     OKCYAN = '\033[96m'
@@ -17,6 +18,9 @@ class BColors:
     ENDC = '\033[0m'
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
+
+    SYSTEM = f'{OKBLUE}{BOLD}[SYSTEM]: {ENDC}'
+    ERROR = f'{FAIL}{BOLD}[SYSTEM]: {ENDC}'
 
 
 class Captcha:
@@ -88,6 +92,12 @@ def minutes_converter(given_minutes):
     if given_minutes < 60:
         return f'{given_minutes} min.'
     hours = str(given_minutes / 60).split('.')[0]
-    minutes = str(given_minutes % 60)
 
-    return f'{hours} h. {minutes} min.'
+    if int(hours) < 24:
+        minutes = str(given_minutes % 60)
+        return f'{hours} h. {minutes} min.'
+
+    days = int(hours) // 24
+    # TODO, HERE IS THE BUG | NEED TO MINUS THE HOURS FROM THE DAYS
+    minutes = str(given_minutes % 60)
+    return f'{str(days)} d. {str(hours)} h. {str(minutes)} min.'
