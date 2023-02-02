@@ -10,11 +10,10 @@ from discord_bot_wefi.bot.cogs import register_all_cogs
 from discord_bot_wefi.bot.database.db_init import create_db
 from discord_bot_wefi.bot.misc import config as conf
 from discord_bot_wefi.bot.misc import env
-from discord_bot_wefi.bot.misc.config import BotLoggerName
 from discord_bot_wefi.bot.misc.util import BColors
 from .bot_logger import BotLogger
 
-logger = getLogger(BotLoggerName)
+logger = getLogger(conf.BotLoggerName)
 
 
 def start_bot():
