@@ -50,7 +50,6 @@ class OnMemberJoin(Cog):
         else:
             user_captcha.code = captcha.get_code()
         session.commit()
-        'User Vitaly joined the server. His Discord ID: 12345, ID in the database: 1235, captcha: 1234'
         logger.info(
             f'User {member.name} joined the server; User data: Discord id - {member.id} | ID in the DB - {user.id} | Captcha - {user_captcha.code}')
         await self.welcome_chat.send(
