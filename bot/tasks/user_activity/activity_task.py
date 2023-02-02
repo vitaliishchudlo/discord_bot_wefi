@@ -80,9 +80,9 @@ class UserActivityTask(Cog):
         """
 
         if os.path.isfile(f'{DB_CORE_DIR}/database.sqlite'):
-            today_formatted_date = datetime.strftime(datetime.today(), '%d_%m_%Y')
+            day_of_report = datetime.strftime(datetime.today() - timedelta(days=1), '%d_%m_%Y')
             src_file = f'{DB_CORE_DIR}/database.sqlite'
-            dst_file = f'{DB_ARCHIVE_DIR}/db_{today_formatted_date}.sqlite'
+            dst_file = f'{DB_ARCHIVE_DIR}/db_{day_of_report}.sqlite'
             shutil.copy2(src_file, dst_file)
             return File(dst_file)
 
@@ -122,7 +122,7 @@ class UserActivityTask(Cog):
                     self.report_color = Color.teal().blue()
 
                 embed = Embed(
-                    title=f"Activity report for {datetime.strftime(self.date_for_report - timedelta(days=1), '%d/%m/%Y')}",
+                    title=f"Activity report for {datetime.strftime(self.date_for_report, '%d/%m/%Y')}",
                     description='This report shows activity in voice channels.', color=self.report_color)
                 embed.add_field(name='User', value='\n'.join(
                     users_names), inline=True)
