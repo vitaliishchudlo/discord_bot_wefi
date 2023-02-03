@@ -6,7 +6,6 @@ from sqlalchemy.orm import sessionmaker
 
 from discord_bot_wefi.bot.misc import config as conf
 from discord_bot_wefi.bot.misc.config import BotLoggerName
-from discord_bot_wefi.bot.misc.util import BColors
 
 logger = getLogger(BotLoggerName)
 
