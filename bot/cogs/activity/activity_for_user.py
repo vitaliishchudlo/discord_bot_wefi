@@ -14,13 +14,26 @@ from discord_bot_wefi.bot.database.models import UserModel, UserActivityModel
 from discord_bot_wefi.bot.misc.config import COGS_ACTIVITY_MESSAGE_EXPIRATION_TIME
 from discord_bot_wefi.bot.misc.util import minutes_converter
 
-
 DATE_COLUMN_NAME = 'ㅤㅤDate\ndd/mm/yyyy'
 MEMBER_COLUMN_NAME = 'Member\nㅤ'
 TIME_COLUMN_NAME = 'Time\nㅤ'
 
+LABEL_EVERYONE_TODAY = 'Today'
+LABEL_EVERYONE_LASTS = 'Lasts'
+LABEL_EVERYONE_TOP = 'The longest activity'
+LABEL_EVERYONE_TOTAL = 'Summary of all activity'
+
+LABEL_MYSELF_LASTS = 'Lasts'
+LABEL_MYSELF_TOP = 'The longest activity'
+LABEL_MYSELF_TOTAL = 'Summary of all activity'
+
+LABEL_SOMEONE_LASTS = 'Lasts'
+LABEL_SOMEONE_TOP = 'The longest activity'
+LABEL_SOMEONE_TOTAL = 'Summary of all activity'
+
 
 class UserActivity(Cog):
+
     def __init__(self, bot: Bot, msg_exp_time=60):
         self.bot = bot
         self.report_color = Color.teal().purple()
@@ -241,12 +254,10 @@ class UserActivity(Cog):
 
             return await interaction.response.send_message(embed=embed)
 
-        today_btn = Button(label='Today', style=ButtonStyle.blurple)
-        lasts_btn = Button(label='Lasts', style=ButtonStyle.blurple)
-        top_for_all_time_btn = Button(
-            label='Top for all time', style=ButtonStyle.blurple, row=2)
-        summary_btn = Button(label='All-time total',
-                             style=ButtonStyle.blurple, row=2)
+        today_btn = Button(label=LABEL_EVERYONE_TODAY, style=ButtonStyle.blurple)
+        lasts_btn = Button(label=LABEL_EVERYONE_LASTS, style=ButtonStyle.blurple)
+        top_for_all_time_btn = Button(label=LABEL_EVERYONE_TOP, style=ButtonStyle.blurple, row=2)
+        summary_btn = Button(label=LABEL_EVERYONE_TOTAL, style=ButtonStyle.blurple, row=3)
 
         today_btn.callback = everyone_activity_today_btn_callback
         top_for_all_time_btn.callback = everyone_activity_top_for_all_time_btn_callback
@@ -345,10 +356,9 @@ class UserActivity(Cog):
 
             return await interaction.response.send_message(embed=embed)
 
-        lasts_btn = Button(label='Lasts', style=ButtonStyle.blurple)
-        top_for_all_time_btn = Button(
-            label='Top for all time', style=ButtonStyle.blurple)
-        summary_btn = Button(label='All-time total', style=ButtonStyle.blurple)
+        lasts_btn = Button(label=LABEL_MYSELF_LASTS, style=ButtonStyle.blurple)
+        top_for_all_time_btn = Button(label=LABEL_MYSELF_TOP, style=ButtonStyle.blurple)
+        summary_btn = Button(label=LABEL_MYSELF_TOTAL, style=ButtonStyle.blurple, row=2)
 
         lasts_btn.callback = my_activity_lasts_btn_callback
         top_for_all_time_btn.callback = my_activity_top_for_all_time_btn_callback
@@ -373,12 +383,9 @@ class UserActivity(Cog):
 
         if isinstance(self.user_to_check, Member):
             try:
-                someone_activity_lasts_btn = Button(
-                    label='Lasts', style=ButtonStyle.blurple)
-                someone_activity_top_for_all_time_btn = Button(
-                    label='Top for all time', style=ButtonStyle.blurple)
-                someone_activity_summary_btn = Button(
-                    label='All-time total', style=ButtonStyle.blurple)
+                someone_activity_lasts_btn = Button(label=LABEL_SOMEONE_LASTS, style=ButtonStyle.blurple)
+                someone_activity_top_for_all_time_btn = Button(label=LABEL_SOMEONE_TOP, style=ButtonStyle.blurple)
+                someone_activity_summary_btn = Button(label=LABEL_SOMEONE_TOTAL, style=ButtonStyle.blurple, row=2)
 
                 someone_activity_lasts_btn.callback = self.someone_activity_lasts_btn_callback
                 someone_activity_top_for_all_time_btn.callback = self.someone_activity_top_for_all_time_btn_callback
