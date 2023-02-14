@@ -14,6 +14,7 @@ from discord_bot_wefi.bot.database.models.users_activity import UserActivityMode
 from discord_bot_wefi.bot.misc.config import BotLoggerName
 from discord_bot_wefi.bot.misc.config import ID_ROLE_FOR_ACTIVITY_TRACK, \
     ID_TEXT_CHANNEL_FOR_REPORT_ACTIVITY
+from discord_bot_wefi.bot.misc.util import minutes_converter
 
 logger = getLogger(BotLoggerName)
 
@@ -95,13 +96,15 @@ class UserActivityTask(Cog):
             datetime.today(), '%d/%m/%Y'), '%d/%m/%Y')
 
         # Every day activity report
-        if not self.date_for_report == today_date:
+        if self.date_for_report == today_date:
+            # if not self.date_for_report == today_date:
             if ID_TEXT_CHANNEL_FOR_REPORT_ACTIVITY:
                 self.channel_report = self.bot.get_channel(
                     ID_TEXT_CHANNEL_FOR_REPORT_ACTIVITY)
 
                 users_names = []
                 users_activity = []
+                converted_users_activity = []
                 active_users_for_today = session.query(UserActivityModel).filter_by(
                     date=self.date_for_report).order_by(UserActivityModel.minutes_in_voice_channels.desc()).all()
 
@@ -109,12 +112,18 @@ class UserActivityTask(Cog):
                     # todo Report view as like 3hours 21 minutes not like "178 minutes"
                     for user in active_users_for_today:
                         users_names.append(user.user.username)
-                        users_activity.append(
-                            str(user.minutes_in_voice_channels))
+                        users_activity.append(str(user.minutes_in_voice_channels))
+
+
+                    for time in users_activity:
+                        converted_users_activity.append(minutes_converter(str(time)))
+
+                    import ipdb;
+                    ipdb.set_trace(context=5)
                 else:
                     users_names.append(
                         '__No one has visited the server today__')
-                    users_activity.append(':pleading_face:')
+                    converted_users_activity.append(':pleading_face:')
 
                 if self.report_color == Color.teal().blue():
                     self.report_color = Color.teal().yellow()
@@ -127,13 +136,13 @@ class UserActivityTask(Cog):
                 embed.add_field(name='User', value='\n'.join(
                     users_names), inline=True)
                 embed.add_field(name='Minutes', value='\n'.join(
-                    users_activity), inline=True)
+                    converted_users_activity), inline=True)
                 if active_users_for_today:
                     self.db_file_for_report = await self.get_today_db_file_for_report()
                     await self.channel_report.send(embed=embed, file=self.db_file_for_report)
                 else:
                     await self.channel_report.send(embed=embed)
-                logger.info(f'Creating daily activity report - {dict(zip(users_names, users_activity))}')
+                logger.info(f'Creating daily activity report - {dict(zip(users_names, converted_users_activity))}')
                 self.date_for_report = today_date
             else:
                 logger.warning(
@@ -160,7 +169,8 @@ class UserActivityTask(Cog):
             session.add(user_activity)
             session.commit()
         if online_members_in_voice_chats:
-            logger.info(f'Saving data activity for users: {", ".join([x.name for x in online_members_in_voice_chats])}.')
+            logger.info(
+                f'Saving data activity for users: {", ".join([x.name for x in online_members_in_voice_chats])}.')
         else:
             logger.info('Voice channels are empty. No activity data was saved.')
 
