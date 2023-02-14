@@ -104,7 +104,6 @@ class UserActivityTask(Cog):
 
                 users_names = []
                 users_activity = []
-                converted_users_activity = []
                 active_users_for_today = session.query(UserActivityModel).filter_by(
                     date=self.date_for_report).order_by(UserActivityModel.minutes_in_voice_channels.desc()).all()
 
@@ -112,18 +111,11 @@ class UserActivityTask(Cog):
                     # todo Report view as like 3hours 21 minutes not like "178 minutes"
                     for user in active_users_for_today:
                         users_names.append(user.user.username)
-                        users_activity.append(str(user.minutes_in_voice_channels))
-
-
-                    for time in users_activity:
-                        converted_users_activity.append(minutes_converter(str(time)))
-
-                    import ipdb;
-                    ipdb.set_trace(context=5)
+                        users_activity.append(minutes_converter(str(user.minutes_in_voice_channels)))
                 else:
                     users_names.append(
                         '__No one has visited the server today__')
-                    converted_users_activity.append(':pleading_face:')
+                    users_activity.append(':pleading_face:')
 
                 if self.report_color == Color.teal().blue():
                     self.report_color = Color.teal().yellow()
@@ -136,13 +128,13 @@ class UserActivityTask(Cog):
                 embed.add_field(name='User', value='\n'.join(
                     users_names), inline=True)
                 embed.add_field(name='Minutes', value='\n'.join(
-                    converted_users_activity), inline=True)
+                    users_activity), inline=True)
                 if active_users_for_today:
                     self.db_file_for_report = await self.get_today_db_file_for_report()
                     await self.channel_report.send(embed=embed, file=self.db_file_for_report)
                 else:
                     await self.channel_report.send(embed=embed)
-                logger.info(f'Creating daily activity report - {dict(zip(users_names, converted_users_activity))}')
+                logger.info(f'Creating daily activity report - {dict(zip(users_names, users_activity))}')
                 self.date_for_report = today_date
             else:
                 logger.warning(
