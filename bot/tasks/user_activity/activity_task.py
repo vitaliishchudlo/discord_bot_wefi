@@ -159,7 +159,10 @@ class UserActivityTask(Cog):
                 date=today_date, minutes_in_voice_channels=1, user_id=user.id)
             session.add(user_activity)
             session.commit()
-        logger.info(f'Saving data activity for users: {", ".join([x.name for x in online_members_in_voice_chats])}')
+        if online_members_in_voice_chats:
+            logger.info(f'Saving data activity for users: {", ".join([x.name for x in online_members_in_voice_chats])}.')
+        else:
+            logger.info('Voice channels are empty. No activity data was saved.')
 
 
 def register_cog(bot: Bot) -> None:

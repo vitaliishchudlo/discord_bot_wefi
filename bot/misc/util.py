@@ -1,26 +1,10 @@
 import os
 import random
-from abc import ABC
 
 from captcha.image import ImageCaptcha
 from nextcord import File
 
 from discord_bot_wefi.bot.misc.config import CAPTCHAS_SAVING_PATH, CAPTCHA_PREFIX
-
-
-class BColors(ABC):
-    HEADER = '\033[95m'
-    OKBLUE = '\033[94m'
-    OKCYAN = '\033[96m'
-    OKGREEN = '\033[92m'
-    WARNING = '\033[93m'
-    FAIL = '\033[91m'
-    ENDC = '\033[0m'
-    BOLD = '\033[1m'
-    UNDERLINE = '\033[4m'
-
-    SYSTEM = f'{OKBLUE}{BOLD}[SYSTEM]: {ENDC}'
-    ERROR = f'{FAIL}{BOLD}[SYSTEM]: {ENDC}'
 
 
 class Captcha:
@@ -65,39 +49,45 @@ class Captcha:
         return File(self.file_path)
 
 
-def minutes_converter(given_minutes):
-    """
-        result = {
-            'hours': None,
-            'minutes': None
-        }
+def calculatetime(fn):
+    def wrapper(given_minutes):
         given_minutes = int(given_minutes)
+
+        days = None
+        hours = None
+        minutes = None
+
         if given_minutes < 60:
-            if formatted_srt:
-                return f'{given_minutes} min.'
-            result['minutes'] = str(given_minutes)
-            return result
-        hours = str(given_minutes / 60).split('.')[0]
-        minutes = str(given_minutes % 60)
+            minutes = str(given_minutes)
 
-        result['hours'] = hours
-        result['minutes'] = minutes
+        if given_minutes < 1440:
+            hours = given_minutes // 60
+            given_minutes -= hours * 60
+            minutes = str(given_minutes)
 
-        if formatted_srt:
-            return f'{hours} h. {minutes} min.'
-        return result
-        """
+        if given_minutes >= 1440:
+            days = given_minutes // 60 // 24
+            given_minutes -= days * 24 * 60
+            if not given_minutes < 60:
+                hours = given_minutes // 60
+                given_minutes -= hours * 60
+            else:
+                hours = str(0)
+            minutes = str(given_minutes)
 
-    given_minutes = int(given_minutes)
-    if given_minutes < 60:
-        return f'{given_minutes} min.'
-    hours = str(given_minutes / 60).split('.')[0]
+        result_data = fn(days=days, hours=hours, minutes=minutes)
+        return result_data
 
-    if int(hours) < 24:
-        minutes = str(given_minutes % 60)
-        return f'{hours} h. {minutes} min.'
+    return wrapper
 
-    days = int(hours) // 24
-    hours = int(hours) - (int(days) * 24)
-    minutes = str(given_minutes % 60)
-    return f'{str(days)} d. {str(hours)} h. {str(minutes)} min.'
+
+@calculatetime
+def minutes_converter(**kwargs):
+    response = ''
+    if kwargs.get('days'):
+        response += f'{kwargs.get("days")} d. '
+    if kwargs.get('hours'):
+        response += f'{kwargs.get("hours")} h. '
+    if kwargs.get('minutes'):
+        response += f'{kwargs.get("minutes")} min. '
+    return response
