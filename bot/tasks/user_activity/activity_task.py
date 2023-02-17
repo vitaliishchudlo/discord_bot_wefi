@@ -96,7 +96,7 @@ class UserActivityTask(Cog):
             datetime.today(), '%d/%m/%Y'), '%d/%m/%Y')
 
         # Every day activity report
-        if self.date_for_report == today_date:
+        if not self.date_for_report == today_date:
             # if not self.date_for_report == today_date:
             if ID_TEXT_CHANNEL_FOR_REPORT_ACTIVITY:
                 self.channel_report = self.bot.get_channel(
