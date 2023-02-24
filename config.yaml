@@ -18,7 +18,8 @@ events:
 tasks:
   activity:
     id_role_for_activity_track: 
-    id_text_channel_for_report: 954793683323064401
+#    id_text_channel_for_report: 954793683323064401
+    id_text_channel_for_report: 952607509649190962
 
 cogs:
   activity:
