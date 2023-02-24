@@ -11,8 +11,7 @@ variables:
 
 events:
   on_member_join:
-    # id_text_channel_for_welcome: 952278528458641438
-    id_text_channel_for_welcome: 952607509649190962
+    id_text_channel_for_welcome: 952278528458641438
     captchas_saving_path: "bot/cogs/events/captchas"
     captcha_prefix: "WeFi"
 
