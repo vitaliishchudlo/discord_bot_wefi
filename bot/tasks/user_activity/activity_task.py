@@ -89,7 +89,7 @@ class UserActivityTask(Cog):
             shutil.copy2(src_file, dst_file)
             return File(dst_file)
 
-    @tasks.loop(seconds=360)
+    @tasks.loop(seconds=60)
     @commands.Cog.listener()
     async def activity_voice_channels_check(self, *args):
         await self.bot.wait_until_ready()
@@ -98,19 +98,7 @@ class UserActivityTask(Cog):
             datetime.today(), '%d/%m/%Y'), '%d/%m/%Y')
 
         # Every day activity report
-        # if not self.date_for_report == today_date:
-        # TODO DELETE
-        # TODO DELETE
-        # TODO DELETE
-        # TODO DELETE
-        if self.date_for_report == today_date:
-            # TODO DELETE
-            # TODO DELETE
-            # TODO DELETE
-            # TODO DELETE
-            # TODO DELETE
-            # TODO DELETE
-            # if not self.date_for_report == today_date:
+        if not self.date_for_report == today_date:
             if ID_TEXT_CHANNEL_FOR_REPORT_ACTIVITY:
                 self.channel_report = self.bot.get_channel(
                     ID_TEXT_CHANNEL_FOR_REPORT_ACTIVITY)
@@ -148,92 +136,6 @@ class UserActivityTask(Cog):
                     await self.channel_report.send(embed=embed, file=self.db_file_for_report)
                 else:
                     await self.channel_report.send(embed=embed)
-
-                # Sending image statistic if day is Monday
-
-                minus7 = today_date - timedelta(days=7)
-                result = session.query(UserActivityModel).filter(UserActivityModel.date >= minus7).order_by(
-                    UserActivityModel.user_id.desc()).all()
-                for x in result:
-                    print(x.user.username, x.minutes_in_voice_channels, x.date)
-                # [<UserActivityModel(user=<UserModel(username=Borland, discord_id=413054728495431687,discriminator=5105)>, )>
-                # <UserActivityModel(user=<UserModel(username=Borland, discord_id=413054728495431687,discriminator=5105)>, )>
-                # <UserActivityModel(user=<UserModel(username=Borland, discord_id=413054728495431687,discriminator=5105)>, )>
-                # <UserActivityModel(user=<UserModel(username=Borland, discord_id=413054728495431687,discriminator=5105)>, )>
-                # <UserActivityModel(user=<UserModel(username=Borland, discord_id=413054728495431687,discriminator=5105)>, )>
-                # <UserActivityModel(user=<UserModel(username=Borland, discord_id=413054728495431687,discriminator=5105)>, )>
-                # <UserActivityModel(user=<UserModel(username=Borland, discord_id=413054728495431687,discriminator=5105)>, )>
-
-                # <UserActivityModel(user=<UserModel(username=SᗩSᕼEEEK, discord_id=401475266557509642,discriminator=9713)>, )>
-                # <UserActivityModel(user=<UserModel(username=SᗩSᕼEEEK, discord_id=401475266557509642,discriminator=9713)>, )>
-                # <UserActivityModel(user=<UserModel(username=SᗩSᕼEEEK, discord_id=401475266557509642,discriminator=9713)>, )>
-                # <UserActivityModel(user=<UserModel(username=SᗩSᕼEEEK, discord_id=401475266557509642,discriminator=9713)>, )>
-                # <UserActivityModel(user=<UserModel(username=SᗩSᕼEEEK, discord_id=401475266557509642,discriminator=9713)>, )>
-                # <UserActivityModel(user=<UserModel(username=SᗩSᕼEEEK, discord_id=401475266557509642,discriminator=9713)>, )>
-                # <UserActivityModel(user=<UserModel(username=SᗩSᕼEEEK, discord_id=401475266557509642,discriminator=9713)>, )>
-                # <UserActivityModel(user=<UserModel(username=Vitalii, discord_id=398567252061978628,discriminator=8010)>, )>
-                # <UserActivityModel(user=<UserModel(username=Vitalii, discord_id=398567252061978628,discriminator=8010)>, )>
-                # <UserActivityModel(user=<UserModel(username=Vitalii, discord_id=398567252061978628,discriminator=8010)>, )>
-                # <UserActivityModel(user=<UserModel(username=Vitalii, discord_id=398567252061978628,discriminator=8010)>, )>
-                # <UserActivityModel(user=<UserModel(username=Vitalii, discord_id=398567252061978628,discriminator=8010)>, )>
-                # <UserActivityModel(user=<UserModel(username=Vitalii, discord_id=398567252061978628,discriminator=8010)>, )>
-                # <UserActivityModel(user=<UserModel(username=Vitalii, discord_id=398567252061978628,discriminator=8010)>, )>]
-
-                # [('Borland', 51, datetime.datetime(2023, 2, 17, 0, 0))
-                # ('Borland', 315, datetime.datetime(2023, 2, 18, 0, 0))
-                # ('Borland', 351, datetime.datetime(2023, 2, 19, 0, 0))
-                # ('Borland', 152, datetime.datetime(2023, 2, 20, 0, 0))
-                # ('Borland', 25, datetime.datetime(2023, 2, 22, 0, 0))
-                # ('Borland', 414, datetime.datetime(2023, 2, 23, 0, 0))
-                # ('Borland', 89, datetime.datetime(2023, 2, 24, 0, 0))
-                # ('SᗩSᕼEEEK', 21, datetime.datetime(2023, 2, 17, 0, 0))
-                # ('SᗩSᕼEEEK', 72, datetime.datetime(2023, 2, 18, 0, 0))
-                # ('SᗩSᕼEEEK', 151, datetime.datetime(2023, 2, 19, 0, 0))
-                # ('SᗩSᕼEEEK', 242, datetime.datetime(2023, 2, 20, 0, 0))
-                # ('SᗩSᕼEEEK', 51, datetime.datetime(2023, 2, 21, 0, 0))
-                # ('SᗩSᕼEEEK', 312, datetime.datetime(2023, 2, 23, 0, 0))
-                # ('SᗩSᕼEEEK', 199, datetime.datetime(2023, 2, 24, 0, 0))
-                # ('Vitalii', 42, datetime.datetime(2023, 2, 17, 0, 0))
-                # ('Vitalii', 35, datetime.datetime(2023, 2, 18, 0, 0))
-                # ('Vitalii', 121, datetime.datetime(2023, 2, 19, 0, 0))
-                # ('Vitalii', 97, datetime.datetime(2023, 2, 20, 0, 0))
-                # ('Vitalii', 551, datetime.datetime(2023, 2, 21, 0, 0))
-                # ('Vitalii', 412, datetime.datetime(2023, 2, 22, 0, 0))
-                # ('Vitalii', 35, datetime.datetime(2023, 2, 23, 0, 0))]
-
-                tmp_user = None
-                user_plot_date = []
-                user_plot_minutes = []
-                import ipdb;
-                ipdb.set_trace(context=5)
-                for user in result:
-                    if not tmp_user:
-                        print('-----> New user', str(user.user.username))
-                        tmp_user = user.user.username
-                    if not tmp_user == user.user.username:
-                        print(f'Not prev user {tmp_user}. Saving data into the PLOT. NEW USER: ', str(user.user.username))
-                        print(user_plot_date, user_plot_minutes)
-                        plt.plot(user_plot_date, user_plot_minutes, label=f'{user.user.username}')
-                        user_plot_date.clear()
-                        user_plot_minutes.clear()
-                        tmp_user = user.user.username
-                    user_plot_date.append(user.date)
-                    user_plot_minutes.append(user.minutes_in_voice_channels)
-                # derby_dates = [datetime(2020, 3, 1), datetime(2020, 3, 2)]
-                # derby_cases = [1, 10]
-                # plt.plot(derby_dates, derby_cases, label="sine")
-                #
-                # nottingham_dates = [datetime(2020, 3, 1), datetime(2020, 3, 2)]
-                # nottingham_cases = [2, 5]
-                # plt.plot(nottingham_dates, nottingham_cases, label="cosine")
-                plt.legend(loc="upper right")
-                plt.xticks(rotation=20)
-                #plt.tight_layout()
-                plt.savefig('result.png', bbox_inches='tight')
-                plt.show()
-
-                import ipdb;
-                ipdb.set_trace(context=5)
                 logger.info(f'Creating daily activity report - {dict(zip(users_names, users_activity))}')
                 self.date_for_report = today_date
             else:
