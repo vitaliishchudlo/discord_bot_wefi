@@ -18,6 +18,7 @@ def register_all_cogs(bot: Bot) -> None:
         reg_cogs.activity.activity_for_user.register_cog,
 
         reg_cogs.json.json_info.register_cog,
+        reg_cogs.logs_results.register_cog,
     )
     for cog in cogs_for_register:
         cog(bot)

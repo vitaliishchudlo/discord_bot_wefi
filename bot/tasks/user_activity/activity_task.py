@@ -1,6 +1,7 @@
 import os
 import shutil
-from datetime import datetime, timedelta
+from datetime import datetime
+from datetime import timedelta
 from logging import getLogger
 from pathlib import Path
 
@@ -14,6 +15,7 @@ from discord_bot_wefi.bot.database.models.users_activity import UserActivityMode
 from discord_bot_wefi.bot.misc.config import BotLoggerName
 from discord_bot_wefi.bot.misc.config import ID_ROLE_FOR_ACTIVITY_TRACK, \
     ID_TEXT_CHANNEL_FOR_REPORT_ACTIVITY
+from discord_bot_wefi.bot.misc.util import minutes_converter
 
 logger = getLogger(BotLoggerName)
 
@@ -109,8 +111,8 @@ class UserActivityTask(Cog):
                     # todo Report view as like 3hours 21 minutes not like "178 minutes"
                     for user in active_users_for_today:
                         users_names.append(user.user.username)
-                        users_activity.append(
-                            str(user.minutes_in_voice_channels))
+                        users_activity.append(minutes_converter(str(user.minutes_in_voice_channels)))
+
                 else:
                     users_names.append(
                         '__No one has visited the server today__')
@@ -159,7 +161,11 @@ class UserActivityTask(Cog):
                 date=today_date, minutes_in_voice_channels=1, user_id=user.id)
             session.add(user_activity)
             session.commit()
-        logger.info(f'Saving data activity for users: {", ".join([x.name for x in online_members_in_voice_chats])}')
+        if online_members_in_voice_chats:
+            logger.info(
+                f'Saving data activity for users: {", ".join([x.name for x in online_members_in_voice_chats])}.')
+        else:
+            logger.info('Voice channels are empty. No activity data was saved.')
 
 
 def register_cog(bot: Bot) -> None:
