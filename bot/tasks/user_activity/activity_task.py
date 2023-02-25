@@ -1,6 +1,7 @@
-import shutil
 import os
-from datetime import datetime, timedelta
+import shutil
+from datetime import datetime
+from datetime import timedelta
 from logging import getLogger
 from pathlib import Path
 
@@ -8,8 +9,6 @@ from nextcord import Embed, File, Color
 from nextcord.ext import commands, tasks
 from nextcord.ext.commands import Cog, Bot
 
-from datetime import datetime
-import matplotlib.pyplot as plt
 from discord_bot_wefi.bot.database import session
 from discord_bot_wefi.bot.database.models.users import UserModel
 from discord_bot_wefi.bot.database.models.users_activity import UserActivityModel

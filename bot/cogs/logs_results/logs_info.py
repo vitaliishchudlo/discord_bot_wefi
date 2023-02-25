@@ -58,16 +58,3 @@ class LogsInfo(Cog):
 
 def register_cog(bot: Bot) -> None:
     bot.add_cog(LogsInfo(bot))
-
-# voice_channels_ids = [str(x.id) for x in self.guild.voice_channels]
-#
-# embed_roles = Embed()
-# embed_roles.add_field(
-#     name='ID', value='\n'.join(roles_ids), inline=True)
-# embed_roles.add_field(
-#     name='Name', value='\n'.join(roles_names), inline=True)
-#
-# await self.ctx.send(embed=embed_roles)
-# await self.ctx.send(embed=embed_members)
-# await self.ctx.send(embed=embed_text_channels)
-# await self.ctx.send(embed=embed_voice_channels)

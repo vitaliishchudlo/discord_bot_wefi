@@ -8,7 +8,6 @@ class JsonInfo(Cog):
         self.bot = bot
 
     @nextcord.slash_command(name='json', description='json about server')
-    # @commands.command(name='activity')
     async def json_info(self, ctx):
         await self.bot.wait_until_ready()
         self.ctx = ctx
