@@ -1,6 +1,8 @@
+import random
 from logging import getLogger
 
 import nextcord
+from nextcord import ButtonStyle
 from nextcord.ext import commands
 from nextcord.ext.commands import Cog, Bot
 from nextcord.utils import get
@@ -9,15 +11,93 @@ from discord_bot_wefi.bot.database import session
 from discord_bot_wefi.bot.database.models import UserCaptchaModel
 from discord_bot_wefi.bot.database.models import UserModel
 from discord_bot_wefi.bot.misc.config import BotLoggerName
-from discord_bot_wefi.bot.misc.config import ID_TEXT_CHANNEL_FOR_WELCOME, BOT_PREFIX, ID_ROLE_AFTER_VERIFICATION
-from discord_bot_wefi.bot.misc.util import Captcha
+from discord_bot_wefi.bot.misc.config import ID_TEXT_CHANNEL_FOR_WELCOME, ID_ROLE_AFTER_VERIFICATION
 
 logger = getLogger(BotLoggerName)
 
 
-class OnMemberJoin(Cog):
+async def captcha_check(button: nextcord.ui.Button, interaction: nextcord.Interaction):
+    user = session.query(UserModel).filter_by(
+        discord_id=interaction.user.id).first()
+    validated_code = session.query(
+        UserCaptchaModel).filter_by(user_id=user.id).first()
 
+    if not validated_code or not button.label == validated_code.code:
+        captcha_solution = str(random.randint(1, 10))
+
+        user_captcha = session.query(UserCaptchaModel).filter_by(user_id=user.id).first()
+        if not user_captcha:
+            user_captcha = UserCaptchaModel(code=captcha_solution, verified=False, user_id=user.id)
+            session.add(user_captcha)
+        else:
+            user_captcha.code = captcha_solution
+        session.commit()
+        # Todo: Logs that user not verified and the new code.
+        return await interaction.response.edit_message(content=f'⛔ {interaction.user.mention} **NOT verified!**\n\n'
+                                                               f'Please, select a number below: **{captcha_solution}**',
+                                                       view=CaptchaAnswer())
+    else:
+        user_captcha = session.query(
+            UserCaptchaModel).filter_by(user_id=user.id).first()
+        user_captcha.verified = True
+        session.commit()
+
+        role_to_give = get(interaction.guild.roles, id=ID_ROLE_AFTER_VERIFICATION)
+        await interaction.user.add_roles(role_to_give)
+    # Todo: Logs that user verified and with what code.
+    return await interaction.response.edit_message(content=f'✅ {interaction.user.mention} verified!', view=None)
+
+
+class CaptchaAnswer(nextcord.ui.View):
+    labels = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
+    random.shuffle(labels)
+
+    button_styles = [ButtonStyle.blurple, ButtonStyle.green, ButtonStyle.secondary, ButtonStyle.danger]
+
+    @nextcord.ui.button(label=labels[0], style=random.choice(button_styles))
+    async def answer_1(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
+        return await captcha_check(button, interaction)
+
+    @nextcord.ui.button(label=labels[1], style=random.choice(button_styles))
+    async def answer_2(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
+        return await captcha_check(button, interaction)
+
+    @nextcord.ui.button(label=labels[2], style=random.choice(button_styles))
+    async def answer_3(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
+        return await captcha_check(button, interaction)
+
+    @nextcord.ui.button(label=labels[3], style=random.choice(button_styles))
+    async def answer_4(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
+        return await captcha_check(button, interaction)
+
+    @nextcord.ui.button(label=labels[4], style=random.choice(button_styles))
+    async def answer_5(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
+        return await captcha_check(button, interaction)
+
+    @nextcord.ui.button(label=labels[5], style=random.choice(button_styles))
+    async def answer_6(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
+        return await captcha_check(button, interaction)
+
+    @nextcord.ui.button(label=labels[6], style=random.choice(button_styles))
+    async def answer_7(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
+        return await captcha_check(button, interaction)
+
+    @nextcord.ui.button(label=labels[7], style=random.choice(button_styles))
+    async def answer_8(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
+        return await captcha_check(button, interaction)
+
+    @nextcord.ui.button(label=labels[8], style=random.choice(button_styles))
+    async def answer_9(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
+        return await captcha_check(button, interaction)
+
+    @nextcord.ui.button(label=labels[9], style=random.choice(button_styles))
+    async def answer_10(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
+        return await captcha_check(button, interaction)
+
+
+class OnMemberJoin(Cog):
     def __init__(self, bot: Bot):
+        self.welcome_chat = None
         self.bot = bot
 
     def save_user_to_db(self, member):
@@ -28,14 +108,16 @@ class OnMemberJoin(Cog):
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
+
         await self.bot.wait_until_ready()
 
-        if ID_TEXT_CHANNEL_FOR_WELCOME:
-            self.welcome_chat = self.bot.get_channel(
-                ID_TEXT_CHANNEL_FOR_WELCOME)
+        if not ID_TEXT_CHANNEL_FOR_WELCOME:
+            # todo: Logg this information here !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11
+            return
 
-        captcha = Captcha(member_id=member.id)
-        captcha.save_picture()
+        self.welcome_chat = self.bot.get_channel(ID_TEXT_CHANNEL_FOR_WELCOME)
+
+        captcha_solution = str(random.randint(1, 10))
 
         user = session.query(UserModel).filter_by(discord_id=member.id).first()
         if not user:
@@ -45,68 +127,19 @@ class OnMemberJoin(Cog):
             UserCaptchaModel).filter_by(user_id=user.id).first()
         if not user_captcha:
             user_captcha = UserCaptchaModel(
-                code=captcha.get_code(), verified=False, user_id=user.id)
+                code=captcha_solution, verified=False, user_id=user.id)
             session.add(user_captcha)
         else:
-            user_captcha.code = captcha.get_code()
+            user_captcha.code = captcha_solution
         session.commit()
+
         logger.info(
             f'User {member.name} joined the server; User data: Discord id - {member.id} | ID in the DB - {user.id} | Captcha - {user_captcha.code}')
         await self.welcome_chat.send(
             f'Hey, {member.mention}, welcome to the {self.bot.guilds[0].name} 👋 \n'
-            'To get more access, you need to be **verified**.\n\n'
-            f'Please, enter the command:  **{BOT_PREFIX}reg** __code from image__',
-            file=captcha.get_file())
-
-
-class MemberVerification(commands.Cog):
-    def __init__(self, bot):
-        self.code = None
-        self.bot = bot
-
-    @nextcord.slash_command(name='reg', description='Registration. Input code')
-    async def reg(self, ctx, code: str):
-        await self.bot.wait_until_ready()
-
-        if not code:
-            return await ctx.response.send_message('Please, enter verification code!')
-
-        self.code = code.lower().replace(' ', '')
-
-        user = session.query(UserModel).filter_by(
-            discord_id=ctx.user.id).first()
-        validated_code = session.query(
-            UserCaptchaModel).filter_by(user_id=user.id).first()
-
-        if not validated_code or not self.code == validated_code.code.lower():
-            captcha = Captcha(member_id=ctx.user.id)
-            captcha.save_picture()
-
-            self.user_captcha = session.query(
-                UserCaptchaModel).filter_by(user_id=user.id).first()
-            if not self.user_captcha:
-                user_captcha = UserCaptchaModel(
-                    code=captcha.get_code(), verified=False, user_id=user.id)
-                session.add(user_captcha)
-            else:
-                self.user_captcha.code = captcha.get_code()
-            session.commit()
-
-            return await ctx.response.send_message(
-                f'⛔ {ctx.user.mention} **NOT verified!**\n\n'
-                f'Please, enter the command:  **{BOT_PREFIX}reg** __code from image__', file=captcha.get_file())
-        else:
-            self.user_captcha = session.query(
-                UserCaptchaModel).filter_by(user_id=user.id).first()
-            self.user_captcha.verified = True
-            session.commit()
-
-            role_to_give = get(ctx.guild.roles, id=ID_ROLE_AFTER_VERIFICATION)
-            await ctx.user.add_roles(role_to_give)
-
-        return await ctx.send(f'✅ {ctx.user.mention} verified!')
+            'You need to be **verified**.\n\n'
+            f'Please, select a number below: **{captcha_solution}**', view=CaptchaAnswer())
 
 
 def register_cog(bot: Bot) -> None:
     bot.add_cog(OnMemberJoin(bot))
-    bot.add_cog(MemberVerification(bot))
