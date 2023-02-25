@@ -375,7 +375,7 @@ class UserActivity(Cog):
 
     @nextcord.slash_command(name='activity', description='text description')
     async def activity_voice_channels_check(self, ctx,
-                                            user: Member = SlashOption(description="Your number", required=False)):
+                                            user: Member = SlashOption(description="Choose user", required=False)):
         await self.bot.wait_until_ready()
 
         self.ctx = ctx
