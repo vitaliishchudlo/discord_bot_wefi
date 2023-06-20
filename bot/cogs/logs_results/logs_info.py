@@ -72,8 +72,7 @@ class LogsInfo(Cog):
         # TODO: replace this  in the files for economy place.
         embed_list_files = Embed()
 
-        embed_list_files.add_field(name='№', value='\n'.join([str(x) for x in range(1, len(logs_files) + 1)]),
-                                   inline=True)
+        embed_list_files.add_field(name='№', value='\n'.join([str(x) for x in range(1, len(logs_files) + 1)]),inline=True)
         embed_list_files.add_field(name='File', value='\n'.join(logs_files), inline=True)
 
         logger.info(f'User: {self.ctx.user.name} entered the command :"logs_show"')
