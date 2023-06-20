@@ -47,7 +47,7 @@ class LogsInfo(Cog):
 
             return await ctx.send(embed=embed_list_files)
 
-    @nextcord.slash_command(name='logs_show', description='Info about logs_results')
+    @nextcord.slash_command(name='logs_show', description='Information about available files of logs')
     async def logs_info(self, ctx):
         await self.bot.wait_until_ready()
 
