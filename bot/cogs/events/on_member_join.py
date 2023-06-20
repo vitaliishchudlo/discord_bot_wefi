@@ -32,7 +32,8 @@ async def captcha_check(button: nextcord.ui.Button, interaction: nextcord.Intera
         else:
             user_captcha.code = captcha_solution
         session.commit()
-        # Todo: Logs that user not verified and the new code.
+        logger.info(
+            f'User {user.username} is not verified. Old captcha code: {validated_code}. New captcha code: {user_captcha}')
         return await interaction.response.edit_message(content=f'⛔ {interaction.user.mention} **NOT verified!**\n\n'
                                                                f'Please, select a number below: **{captcha_solution}**',
                                                        view=CaptchaAnswer())
@@ -44,7 +45,8 @@ async def captcha_check(button: nextcord.ui.Button, interaction: nextcord.Intera
 
         role_to_give = get(interaction.guild.roles, id=ID_ROLE_AFTER_VERIFICATION)
         await interaction.user.add_roles(role_to_give)
-    # Todo: Logs that user verified and with what code.
+    logger.info(
+        f'User {user.username} verified successfully with captcha code: {validated_code}')
     return await interaction.response.edit_message(content=f'✅ {interaction.user.mention} verified!', view=None)
 
 
@@ -112,7 +114,7 @@ class OnMemberJoin(Cog):
         await self.bot.wait_until_ready()
 
         if not ID_TEXT_CHANNEL_FOR_WELCOME:
-            # todo: Logg this information here !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11
+            logger.warning('Parameter "ID_TEXT_CHANNEL_FOR_WELCOME" is not filled in misc/config.py file')
             return
 
         self.welcome_chat = self.bot.get_channel(ID_TEXT_CHANNEL_FOR_WELCOME)

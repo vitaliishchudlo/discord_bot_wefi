@@ -1,6 +1,11 @@
+from logging import getLogger
+
 from nextcord.ext.commands import Bot
 
 from discord_bot_wefi.bot import cogs as reg_cogs
+from discord_bot_wefi.bot.misc.config import BotLoggerName
+
+logger = getLogger(BotLoggerName)
 
 
 def register_all_cogs(bot: Bot) -> None:
@@ -22,3 +27,5 @@ def register_all_cogs(bot: Bot) -> None:
     )
     for cog in cogs_for_register:
         cog(bot)
+
+    logger.info('Cogs - registered successfully')
