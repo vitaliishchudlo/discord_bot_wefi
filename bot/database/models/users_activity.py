@@ -15,6 +15,7 @@ class UserActivityModel(Base):
     minutes_in_voice_channels = Column(Integer)
     user_id = Column(Integer(), ForeignKey('users.id'))
 
+    # Part 2 (from models/users.py)
     # user = relationship('User', back_populates='activity')
     user = relationship('UserModel', backref='activity')
 
