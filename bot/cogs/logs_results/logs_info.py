@@ -33,6 +33,11 @@ class LogsInfo(Cog):
             return await ctx.send(f'Log file for **{log_file_needed.split(".")[1]}**', file=response_file)
         else:
             logs_files = self.get_list_of_logs_files()
+            for file in logs_files:
+                if 'bot_logs.' in file:
+                    file.replace('bot_logs.', '')
+                if '.log' in file:
+                    file.replace('.log', '')
             embed_list_files = Embed()
             embed_list_files.title = 'Chosen bad ID. You can enter next ID`s:'
 
@@ -47,6 +52,12 @@ class LogsInfo(Cog):
         await self.bot.wait_until_ready()
 
         logs_files = self.get_list_of_logs_files()
+        for file in logs_files:
+            if 'bot_logs.' in file:
+                file.replace('bot_logs.', '')
+            if '.log' in file:
+                file.replace('.log', '')
+        # TODO: replace this  in the files for economy place.
         embed_list_files = Embed()
 
         embed_list_files.add_field(name='№', value='\n'.join([str(x) for x in range(1, len(logs_files) + 1)]),
