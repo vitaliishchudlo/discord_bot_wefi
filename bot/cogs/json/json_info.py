@@ -1,13 +1,19 @@
+from logging import getLogger
+
 import nextcord
 from nextcord import Embed
 from nextcord.ext.commands import Bot, Cog
+
+from discord_bot_wefi.bot.misc.config import BotLoggerName
+
+logger = getLogger(BotLoggerName)
 
 
 class JsonInfo(Cog):
     def __init__(self, bot: Bot):
         self.bot = bot
 
-    @nextcord.slash_command(name='json', description='json about server')
+    @nextcord.slash_command(name='json', description='Return main info about server')
     async def json_info(self, ctx):
         await self.bot.wait_until_ready()
         self.ctx = ctx
@@ -54,6 +60,7 @@ class JsonInfo(Cog):
         await self.ctx.send(embed=embed_text_channels)
         await self.ctx.send(embed=embed_voice_channels)
 
+        logger.info(f'User: {self.ctx.user.name} entered the command :"json"')
 
 def register_cog(bot: Bot) -> None:
     bot.add_cog(JsonInfo(bot))

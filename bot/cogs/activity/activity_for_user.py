@@ -1,5 +1,6 @@
 import asyncio
 from datetime import datetime
+from logging import getLogger
 
 import nextcord
 from nextcord import Color, ButtonStyle, Embed
@@ -11,8 +12,11 @@ from sqlalchemy import func
 
 from discord_bot_wefi.bot.database import session
 from discord_bot_wefi.bot.database.models import UserModel, UserActivityModel
+from discord_bot_wefi.bot.misc.config import BotLoggerName
 from discord_bot_wefi.bot.misc.config import COGS_ACTIVITY_MESSAGE_EXPIRATION_TIME
 from discord_bot_wefi.bot.misc.util import minutes_converter
+
+logger = getLogger(BotLoggerName)
 
 DATE_COLUMN_NAME = 'ㅤㅤDate\ndd/mm/yyyy'
 MEMBER_COLUMN_NAME = 'Member\nㅤ'
@@ -373,13 +377,16 @@ class UserActivity(Cog):
         await asyncio.sleep(self.msg_exp_time)
         await msg_response.delete()
 
-    @nextcord.slash_command(name='activity', description='text description')
+    @nextcord.slash_command(name='activity', description='You can check users activity in voice channels on the server')
     async def activity_voice_channels_check(self, ctx,
-                                            user: Member = SlashOption(description="Choose user", required=False)):
+                                            user: Member = SlashOption(description="Choose user from the server", required=False)):
         await self.bot.wait_until_ready()
 
         self.ctx = ctx
         self.user_to_check = user
+
+        logger.info(
+            f'User {self.ctx.user.name} entered command: "/activity". Params: "user_to_check": {self.user_to_check}')
 
         if isinstance(self.user_to_check, Member):
             try:

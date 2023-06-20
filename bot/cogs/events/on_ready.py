@@ -27,8 +27,7 @@ class OnReady(Cog):
         for member in all_members_on_server:
             member_model = UserModel(
                 discord_id=member.id,
-                username=member.name,
-                discriminator=member.discriminator
+                username=member.name
             )
             if member_model.discord_id in all_members_discord_ids_on_database:
                 continue

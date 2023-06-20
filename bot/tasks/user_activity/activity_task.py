@@ -109,10 +109,10 @@ class UserActivityTask(Cog):
 
                 if active_users_for_today:
                     # todo Report view as like 3hours 21 minutes not like "178 minutes"
+                    # todo: i think this task is done
                     for user in active_users_for_today:
                         users_names.append(user.user.username)
                         users_activity.append(minutes_converter(str(user.minutes_in_voice_channels)))
-
                 else:
                     users_names.append(
                         '__No one has visited the server today__')
