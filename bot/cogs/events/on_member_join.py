@@ -101,7 +101,7 @@ class OnMemberJoin(Cog):
         self.bot = bot
 
     def save_user_to_db(self, member):
-        user = UserModel(discord_id=member.id, username=member.name, discriminator=member.discriminator)
+        user = UserModel(discord_id=member.id, username=member.name)
         session.add(user)
         session.commit()
         return user
