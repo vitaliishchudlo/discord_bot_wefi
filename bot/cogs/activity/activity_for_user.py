@@ -377,9 +377,9 @@ class UserActivity(Cog):
         await asyncio.sleep(self.msg_exp_time)
         await msg_response.delete()
 
-    @nextcord.slash_command(name='activity', description='text description')
+    @nextcord.slash_command(name='activity', description='You can check users activity in voice channels on the server')
     async def activity_voice_channels_check(self, ctx,
-                                            user: Member = SlashOption(description="Choose user", required=False)):
+                                            user: Member = SlashOption(description="Choose user from the server", required=False)):
         await self.bot.wait_until_ready()
 
         self.ctx = ctx

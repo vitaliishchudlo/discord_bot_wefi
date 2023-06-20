@@ -18,7 +18,7 @@ class LogsInfo(Cog):
             return len(sorted(os.listdir(self.logs_dir), reverse=True))
         return sorted(os.listdir(self.logs_dir), reverse=True)
 
-    @nextcord.slash_command(name='get_logs', description='Get logs_results')
+    @nextcord.slash_command(name='get_logs', description='Get logs files.')
     async def get_logs(self, ctx,
                        log_file_target: int = SlashOption(description="File ID. /logs_show -> list of files id",
                                                           required=True)):

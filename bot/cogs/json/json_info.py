@@ -13,7 +13,7 @@ class JsonInfo(Cog):
     def __init__(self, bot: Bot):
         self.bot = bot
 
-    @nextcord.slash_command(name='json', description='json about server')
+    @nextcord.slash_command(name='json', description='Return main info about server')
     async def json_info(self, ctx):
         await self.bot.wait_until_ready()
         self.ctx = ctx
