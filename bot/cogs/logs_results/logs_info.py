@@ -57,6 +57,7 @@ class LogsInfo(Cog):
                 file.replace('bot_logs.', '')
             if '.log' in file:
                 file.replace('.log', '')
+                
         # TODO: replace this  in the files for economy place.
         embed_list_files = Embed()
 
