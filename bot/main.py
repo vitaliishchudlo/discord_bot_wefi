@@ -29,13 +29,11 @@ def start_bot():
     # Checking whether the user has added a bot token
     token = env.BOT_TOKEN
     if not token or token == 'None':
-        logger.error('You need to fill BOT_TOKEN variable in the .env file (example in .env.tmp)')
+        logger.error('You need to fill BOT_TOKEN variable in the .env file (example in the .env.tmp file)')
         exit(-1)
 
-    """
-    DataBase initialization:
-    """
-    if not os.path.isfile(conf.PATH_DATABASE) or 'migrate' in sys.argv or 'hardmigrate' in sys.argv:
+    # DataBase initialization:
+    if not os.path.isfile(conf.PATH_DATmkABASE) or 'migrate' in sys.argv or 'hardmigrate' in sys.argv:
         if 'hardmigrate' in sys.argv:
             try:
                 os.remove(conf.PATH_DATABASE)

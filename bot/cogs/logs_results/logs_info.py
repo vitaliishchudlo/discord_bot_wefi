@@ -57,6 +57,8 @@ class LogsInfo(Cog):
                 file.replace('bot_logs.', '')
             if '.log' in file:
                 file.replace('.log', '')
+                
+        # TODO: replace this  in the files for economy place.
         embed_list_files = Embed()
 
         embed_list_files.add_field(name='№', value='\n'.join([str(x) for x in range(1, len(logs_files) + 1)]),
