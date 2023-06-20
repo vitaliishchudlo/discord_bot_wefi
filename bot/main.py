@@ -33,7 +33,7 @@ def start_bot():
         exit(-1)
 
     # DataBase initialization:
-    if not os.path.isfile(conf.PATH_DATmkABASE) or 'migrate' in sys.argv or 'hardmigrate' in sys.argv:
+    if not os.path.isfile(conf.PATH_DATABASE) or 'migrate' in sys.argv or 'hardmigrate' in sys.argv:
         if 'hardmigrate' in sys.argv:
             try:
                 os.remove(conf.PATH_DATABASE)
