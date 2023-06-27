@@ -4,3 +4,4 @@ from .events import register_cog
 from .activity import register_cog
 from .json import register_cog
 from .logs_results import register_cog
+from .db_upload import register_cog

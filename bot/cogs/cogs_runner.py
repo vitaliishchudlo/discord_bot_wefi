@@ -24,7 +24,11 @@ def register_all_cogs(bot: Bot) -> None:
 
         reg_cogs.json.json_info.register_cog,
         reg_cogs.logs_results.register_cog,
+
+        reg_cogs.db_upload.register_cog,
     )
+    # todo: можна імплементувати в init імпорт "as" from .db_upload import register_cog as db_upload_test
+    # і тоді тут тільки: reg_cogs.db_upload_test
     for cog in cogs_for_register:
         cog(bot)
 

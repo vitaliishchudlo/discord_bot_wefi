@@ -23,19 +23,23 @@ async def captcha_check(button: nextcord.ui.Button, interaction: nextcord.Intera
         UserCaptchaModel).filter_by(user_id=user.id).first()
 
     if not validated_code or not button.label == validated_code.code:
-        captcha_solution = str(random.randint(1, 10))
+
+
+        new_captcha_solution = str(random.randint(1, 10))
+
+        logger.info(
+            f'User {user.username} is not verified. Old captcha code: {validated_code}. New captcha code: {new_captcha_solution}')
 
         user_captcha = session.query(UserCaptchaModel).filter_by(user_id=user.id).first()
         if not user_captcha:
-            user_captcha = UserCaptchaModel(code=captcha_solution, verified=False, user_id=user.id)
+            user_captcha = UserCaptchaModel(code=new_captcha_solution, verified=False, user_id=user.id)
             session.add(user_captcha)
         else:
-            user_captcha.code = captcha_solution
+            user_captcha.code = new_captcha_solution
         session.commit()
-        logger.info(
-            f'User {user.username} is not verified. Old captcha code: {validated_code}. New captcha code: {user_captcha}')
+
         return await interaction.response.edit_message(content=f'⛔ {interaction.user.mention} **NOT verified!**\n\n'
-                                                               f'Please, select a number below: **{captcha_solution}**',
+                                                               f'Please, select a number below: **{new_captcha_solution}**',
                                                        view=CaptchaAnswer())
     else:
         user_captcha = session.query(
