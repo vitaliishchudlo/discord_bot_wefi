@@ -1,6 +1,7 @@
 from logging import getLogger
 
-from nextcord import Game
+import nextcord
+from nextcord import Game, Streaming, Activity, CustomActivity
 from nextcord.ext import commands
 from nextcord.ext.commands import Bot
 from nextcord.ext.commands import Cog
@@ -43,7 +44,7 @@ class OnReady(Cog):
         self.init_users_with_db()
         start_all_loops(self.bot)
         logger.info('The Bot has been successfully launched :-)\n')
-        await self.bot.change_presence(activity=Game(BotStatusText))
+        await self.bot.change_presence(activity=Activity(type=nextcord.ActivityType.listening, name=BotStatusText))
 
 
 def register_cog(bot: Bot) -> None:

@@ -15,7 +15,7 @@ def read_config_yaml():
         except yaml.YAMLError as exc:
             logger.error(exc)
 
-BotStatusText = 'Use me with **/**'
+BotStatusText = 'commands -> /'
 
 CONFIG_FILE_PATH = 'config.yaml'
 PATH_DATABASE = read_config_yaml().get('database').get('PATH_DATABASE')
