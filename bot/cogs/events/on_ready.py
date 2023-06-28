@@ -8,6 +8,7 @@ from nextcord.ext.commands import Cog
 from discord_bot_wefi.bot.database import session, UserModel
 from discord_bot_wefi.bot.misc.config import BotLoggerName
 from discord_bot_wefi.bot.tasks.runner import start_all_loops
+from discord_bot_wefi.bot.misc.config import BotStatusText
 
 logger = getLogger(BotLoggerName)
 
@@ -42,7 +43,7 @@ class OnReady(Cog):
         self.init_users_with_db()
         start_all_loops(self.bot)
         logger.info('The Bot has been successfully launched :-)\n')
-        await self.bot.change_presence(activity=Game('Testing'))
+        await self.bot.change_presence(activity=Game(BotStatusText))
 
 
 def register_cog(bot: Bot) -> None:
