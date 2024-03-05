@@ -9,6 +9,10 @@ class UserModel(Base):
     id = Column(Integer, primary_key=True)
     discord_id = Column(Integer)
     username = Column(String)
+    faceit_player_id = Column(String)
+    faceit_lvl = Column(Integer)
+    faceit_elo = Column(Integer)
+    faceit_profile_link = Column(String)
 
     # Can be used this method of the relationship. But used method in models/users_activity.py
     # Part 1
