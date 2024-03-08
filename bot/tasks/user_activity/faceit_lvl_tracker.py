@@ -42,8 +42,8 @@ class FaceitLvlTracker(Cog):
 
         for player in faceit_statistics_result:
             user = session.query(UserModel).filter_by(faceit_player_id=player['player_id']).first()
-            user.faceit_elo = player['games']['cs2']['faceit_elo']
-            user.faceit_lvl = player['games']['cs2']['skill_level']
+            user.faceit_elo = player.get('games', {}).get('cs2', {}).get('faceit_elo', player.get('games', {}).get('csgo', {}).get('faceit_elo'))
+            user.faceit_lvl = player.get('games', {}).get('cs2', {}).get('skill_level', player.get('games', {}).get('csgo', {}).get('skill_level'))
             user.faceit_profile_link = player['faceit_url'].replace('{lang}', 'en')
             session.commit()
             logger.info(f'Updating faceit elo for user {user.username} - {user.faceit_elo}/{user.faceit_lvl} lvl')
@@ -54,32 +54,7 @@ class FaceitLvlTracker(Cog):
                 await discord_user.add_roles(role_obj)
                 logger.info(f'Added role {role_obj} to user {user.username}')
 
-        # ToDo: Bug when trying to get key "cs2" when it`s only csgo:
 
-        """
-        "games": {
-    "csgo": {
-      "region": "EU",
-      "game_player_id": "76561198889421960",
-      "skill_level": 2,
-      "faceit_elo": 950,
-      "game_player_name": "andex.qo",
-      "skill_level_label": "",
-      "regions": {},
-      "game_profile_id": ""
-    },
-    "cs2": {
-      "region": "EU",
-      "game_player_id": "76561198889421960",
-      "skill_level": 4,
-      "faceit_elo": 950,
-      "game_player_name": "andex.qo",
-      "skill_level_label": "",
-      "regions": {},
-      "game_profile_id": ""
-    }
-  },
-        """
 
 
 def register_cog(bot: Bot) -> None:
