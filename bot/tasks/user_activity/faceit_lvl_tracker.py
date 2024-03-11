@@ -1,8 +1,9 @@
 from logging import getLogger
 
-from nextcord.ext import commands, tasks
-from nextcord.ext.commands import Cog, Bot
 import requests
+from nextcord.ext import tasks
+from nextcord.ext.commands import Cog, Bot
+
 from discord_bot_wefi.bot.database import session
 from discord_bot_wefi.bot.database.models.users import UserModel
 from discord_bot_wefi.bot.misc.config import BotLoggerName, FACEIT_API_BASE_URL, FACEIT_API_KEY, FACEIT_ROLES_BY_LVL
@@ -20,8 +21,7 @@ class FaceitLvlTracker(Cog):
         role_obj = self.bot.guilds[0].get_role(role_id)
         return role_obj if role_obj else None
 
-    @tasks.loop(seconds=360)
-    @commands.Cog.listener()
+    @tasks.loop(seconds=300)  # Every 5 minutes
     async def faceit_lvl_check(self, *args):
         await self.bot.wait_until_ready()
 
@@ -42,8 +42,8 @@ class FaceitLvlTracker(Cog):
 
         for player in faceit_statistics_result:
             user = session.query(UserModel).filter_by(faceit_player_id=player['player_id']).first()
-            user.faceit_elo = player.get('games', {}).get('cs2', {}).get('faceit_elo', player.get('games', {}).get('csgo', {}).get('faceit_elo'))
-            user.faceit_lvl = player.get('games', {}).get('cs2', {}).get('skill_level', player.get('games', {}).get('csgo', {}).get('skill_level'))
+            user.faceit_elo = player.get('games', {}).get('cs2', {}).get('faceit_elo',player.get('games', {}).get('csgo', {}).get('faceit_elo'))
+            user.faceit_lvl = player.get('games', {}).get('cs2', {}).get('skill_level',player.get('games', {}).get('csgo', {}).get('skill_level'))
             user.faceit_profile_link = player['faceit_url'].replace('{lang}', 'en')
             session.commit()
             logger.info(f'Updating faceit elo for user {user.username} - {user.faceit_elo}/{user.faceit_lvl} lvl')
@@ -53,8 +53,6 @@ class FaceitLvlTracker(Cog):
                 role_obj = await self.get_role_id_depending_on_the_faceit_lvl(user.faceit_lvl)
                 await discord_user.add_roles(role_obj)
                 logger.info(f'Added role {role_obj} to user {user.username}')
-
-
 
 
 def register_cog(bot: Bot) -> None:
