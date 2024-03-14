@@ -20,11 +20,9 @@ class OnReady(Cog):
         self.bot = bot
 
     def init_users_with_db(self):
-        all_members_on_server = [
-            member for member in self.bot.get_all_members()]
+        all_members_on_server = [member for member in self.bot.get_all_members()]
         all_members_on_database = session.query(UserModel).all()
-        all_members_discord_ids_on_database = [
-            x.discord_id for x in all_members_on_database]
+        all_members_discord_ids_on_database = [x.discord_id for x in all_members_on_database]
 
         for member in all_members_on_server:
             member_model = UserModel(
@@ -41,7 +39,7 @@ class OnReady(Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
-        self.init_users_with_db()
+        self.init_users_with_db()  # If bot was turn off - add all the new users to the database
         start_all_loops(self.bot)
         logger.info('The Bot has been successfully launched :-)\n')
         await self.bot.change_presence(activity=Activity(type=nextcord.ActivityType.listening, name=BotStatusText))
