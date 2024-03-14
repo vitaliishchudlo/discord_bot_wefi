@@ -17,8 +17,22 @@ events:
 
 tasks:
   activity:
-    id_role_for_activity_track: 
+    id_role_for_activity_track:
     id_text_channel_for_report: 954793683323064401
+  faceit:
+    api_key: "f9d12ccb-1c55-4032-aaaa-faff0378b190"
+    api_base_url: "https://open.faceit.com/data/v4"
+    roles_by_lvl:
+      lvl1: 1214664452616753162
+      lvl2: 1214665111457890365
+      lvl3: 1214665375514370129
+      lvl4: 1214665526840664084
+      lvl5: 1214665591684730991
+      lvl6: 1214665595660935209
+      lvl7: 1214665598634696764
+      lvl8: 1214665633254473740
+      lvl9: 1214665635263422537
+      lvl10: 1214665636480032818
 
 cogs:
   activity:

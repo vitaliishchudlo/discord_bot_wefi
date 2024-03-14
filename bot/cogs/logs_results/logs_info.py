@@ -23,8 +23,8 @@ class LogsInfo(Cog):
             return len(sorted(os.listdir(self.logs_dir), reverse=True))
         return sorted(os.listdir(self.logs_dir), reverse=True)
 
-    @nextcord.slash_command(name='get_logs', description='Get logs files.')
-    async def get_logs(self, ctx,
+    @nextcord.slash_command(name='logs_get', description='Get logs files.')
+    async def logs_get(self, ctx,
                        log_file_target: int = SlashOption(description="File ID. /logs_show -> list of files id",
                                                           required=True)):
         await self.bot.wait_until_ready()
@@ -35,7 +35,7 @@ class LogsInfo(Cog):
             log_file_needed = logs_files[log_file_target - 1]
             response_file = File(f'{self.logs_dir}/{log_file_needed}')
             logger.info(
-                f'User: {ctx.user.name} entered the command :"get_logs" with parameter: {log_file_target} (log file name: {log_file_needed})')
+                f'User: {ctx.user.name} entered the command :"logs_get" with parameter: {log_file_target} (log file name: {log_file_needed})')
             if log_file_target - 1 == 0:
                 return await ctx.send(f'Log file for **today**', file=response_file)
             return await ctx.send(f'Log file for **{log_file_needed.split(".")[1]}**', file=response_file)
@@ -53,7 +53,7 @@ class LogsInfo(Cog):
                                        inline=True)
             embed_list_files.add_field(name='File', value='\n'.join(logs_files), inline=True)
 
-            logger.info(f'User: {ctx.user.name} entered the command :"get_logs" with bad parameter: {log_file_target}')
+            logger.info(f'User: {ctx.user.name} entered the command :"logs_get" with bad parameter: {log_file_target}')
 
             return await ctx.send(embed=embed_list_files)
 

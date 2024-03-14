@@ -16,6 +16,8 @@ def read_config_yaml():
             logger.error(exc)
 
 
+BotStatusText = 'commands -> /'
+
 CONFIG_FILE_PATH = 'config.yaml'
 PATH_DATABASE = read_config_yaml().get('database').get('PATH_DATABASE')
 
@@ -40,5 +42,9 @@ ID_ROLE_AFTER_VERIFICATION = ID_ROLE_OTHER
 
 COGS_ACTIVITY_MESSAGE_EXPIRATION_TIME = read_config_yaml().get(
     'cogs').get('activity').get('message_expiration_seconds')
+
+FACEIT_API_BASE_URL = read_config_yaml().get('tasks').get('faceit').get('api_base_url')
+FACEIT_API_KEY = read_config_yaml().get('tasks').get('faceit').get('api_key')
+FACEIT_ROLES_BY_LVL = read_config_yaml().get('tasks').get('faceit').get('roles_by_lvl')
 
 timezone = read_config_yaml().get('timezone')
