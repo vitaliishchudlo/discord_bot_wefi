@@ -17,9 +17,16 @@ class FaceitLvlTracker(Cog):
         self.bot = bot
 
     async def get_role_id_depending_on_the_faceit_lvl(self, faceit_lvl):
-        role_id = FACEIT_ROLES_BY_LVL.get(f'lvl{faceit_lvl}')
-        role_obj = self.bot.guilds[0].get_role(role_id)
-        return role_obj if role_obj else None
+        """
+        Get the required role ID, OBJ and unwanted roles OBJ for the user depending on the faceit lvl
+        """
+        required_role_id = FACEIT_ROLES_BY_LVL.get(f'lvl{faceit_lvl}')
+        required_role_obj = self.bot.guilds[0].get_role(required_role_id)
+
+        unwanted_roles_obj = [self.bot.guilds[0].get_role(role_id) for level, role_id in FACEIT_ROLES_BY_LVL.items() if
+                              level != f'lvl{faceit_lvl}']
+
+        return required_role_obj, unwanted_roles_obj
 
     @tasks.loop(seconds=300)  # Every 5 minutes
     async def faceit_lvl_check(self, *args):
@@ -50,9 +57,13 @@ class FaceitLvlTracker(Cog):
 
             discord_user = self.bot.guilds[0].get_member(user.discord_id)
             if discord_user:
-                role_obj = await self.get_role_id_depending_on_the_faceit_lvl(user.faceit_lvl)
-                await discord_user.add_roles(role_obj)
-                logger.info(f'Added role {role_obj} to user {user.username}')
+                required_role_obj, unwanted_roles_obj = await self.get_role_id_depending_on_the_faceit_lvl(user.faceit_lvl)
+                await discord_user.add_roles(required_role_obj)
+                logger.info(f'Added role {required_role_obj} to user {user.username}')
+                for role in unwanted_roles_obj:
+                    if role in discord_user.roles:
+                        await discord_user.remove_roles(role)
+                        logger.info(f'Removed role {role} from user {user.username}')
 
 
 def register_cog(bot: Bot) -> None:
