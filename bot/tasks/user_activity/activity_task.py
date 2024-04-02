@@ -135,11 +135,11 @@ class UserActivityTask(Cog):
                     await self.channel_report.send(embed=embed, file=self.db_file_for_report)
                 else:
                     await self.channel_report.send(embed=embed)
-                logger.info(f'Creating daily activity report - {dict(zip(users_names, users_activity))}')
+                logger.info(f'[TASK] Creating daily activity report - {dict(zip(users_names, users_activity))}')
                 self.date_for_report = today_date
             else:
                 logger.warning(
-                    'You did not fill in the variable "ID_TEXT_CHANNEL_FOR_REPORT_ACTIVITY" in the config file')
+                    '[TASK] You did not fill in the variable "ID_TEXT_CHANNEL_FOR_REPORT_ACTIVITY" in the config file')
 
         # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -163,9 +163,9 @@ class UserActivityTask(Cog):
             session.commit()
         if online_members_in_voice_chats:
             logger.info(
-                f'Saving data activity for users: {", ".join([x.name for x in online_members_in_voice_chats])}.')
+                f'[TASK] Saving data activity for users: {", ".join([x.name for x in online_members_in_voice_chats])}.')
         else:
-            logger.info('Voice channels are empty. No activity data was saved.')
+            logger.info('[TASK] Voice channels are empty. No activity data was saved.')
 
 
 def register_cog(bot: Bot) -> None:
