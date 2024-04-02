@@ -76,5 +76,6 @@ class FaceitLvlTracker(Cog):
             print(f'Error in faceit_lvl_check task: {err}')
             logger.error(f'Error in faceit_lvl_check task: {err}')
 
+
 def register_cog(bot: Bot) -> None:
     bot.add_cog(FaceitLvlTracker(bot))

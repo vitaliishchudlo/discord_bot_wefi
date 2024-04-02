@@ -144,7 +144,7 @@ class OnMemberJoin(Cog):
         await self.welcome_chat.send(
             f'Hey, {member.mention}, welcome to the {self.bot.guilds[0].name} 👋 \n'
             'You need to be **verified**.\n\n'
-            f'Please, select a number below: **{captcha_solution}**', view=CaptchaAnswer())
+            f'Please, select a number: **{captcha_solution}**', view=CaptchaAnswer())
 
 
 def register_cog(bot: Bot) -> None:
