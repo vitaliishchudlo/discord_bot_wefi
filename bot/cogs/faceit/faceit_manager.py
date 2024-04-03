@@ -44,7 +44,7 @@ class FaceitManager(Cog):
             if not ctx.permissions.administrator:  # check if the user is not administator
                 return await ctx.send('You are not allowed to set faceit profile for other users')
 
-        pattern = re.compile(r'^https?://(?:www\.)?faceit\.com/en/players/(?P<nickname>.+?)(?:/|$)')
+        pattern = re.compile(r'^https?://(?:www\.)?faceit\.com/[a-z]{2}/players/(?P<nickname>.+?)(?:/|$)')
         match = pattern.search(faceit_link)
         if not match:
             return await ctx.send('Faceit profile url is invalid')
