@@ -34,8 +34,9 @@ class FaceitManager(Cog):
                             description='Connect the Discord account with the Faceit profile')
     async def set_faceit_profile(self, ctx,
                                  faceit_link: str,
-                                 command_user: Member = SlashOption(description="Choose user from the server",
-                                                                    required=False)):
+                                 command_user: Member = SlashOption(description="Choose user from the server",required=False)):
+        # Todo: Future: Remove the database requests for each user and use bulk requests instead
+        # Todo: Future: Try to do the same for the discord requests (await discord.add_roles, await discord.remove_roles)
         await self.bot.wait_until_ready()
         self.ctx = ctx
 

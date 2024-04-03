@@ -30,6 +30,9 @@ class FaceitLvlTracker(Cog):
 
     @tasks.loop(seconds=300)  # Every 5 minutes
     async def faceit_lvl_check(self, *args):
+        # Todo: Future: Remove the database requests for each user and use bulk requests instead
+        # Todo: Future: Try to do the same for the discord requests (await discord.add_roles, await discord.remove_roles)
+
         try:
             await self.bot.wait_until_ready()
 
@@ -60,8 +63,8 @@ class FaceitLvlTracker(Cog):
                                                                                  'skill_level'))
                 user.faceit_profile_link = player['faceit_url'].replace('{lang}', 'en')
                 session.commit()
-                logger.info(f'[TASK] Faceit profile of user {user.username} - updated! ELO/LVL: {user.faceit_elo}/{user.faceit_lvl}')
-
+                logger.info(
+                    f'[TASK] Faceit profile of user {user.username} - updated! ELO/LVL: {user.faceit_elo}/{user.faceit_lvl}')
                 discord_user = self.bot.guilds[0].get_member(user.discord_id)
                 if discord_user:
                     required_role_obj, unwanted_roles_obj = await self.get_role_id_depending_on_the_faceit_lvl(
