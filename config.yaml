@@ -12,6 +12,7 @@ variables:
 events:
   on_member_join:
     id_text_channel_for_welcome: 952278528458641438
+    id_role_bot: 952288281545023548
     captchas_saving_path: "bot/cogs/events/captchas"
     captcha_prefix: "WeFi"
 
