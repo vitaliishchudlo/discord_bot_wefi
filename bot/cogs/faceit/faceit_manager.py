@@ -3,7 +3,7 @@ from logging import getLogger
 
 import nextcord
 import requests
-from nextcord import SlashOption
+from nextcord import SlashOption, Embed
 from nextcord.ext.commands import Cog, Bot
 from nextcord.member import Member
 
@@ -30,7 +30,8 @@ class FaceitManager(Cog):
 
         return required_role_obj, unwanted_roles_obj
 
-    @nextcord.slash_command(name='set_faceit_profile', description='Information about available files of logs')
+    @nextcord.slash_command(name='set_faceit_profile',
+                            description='Connect the Discord account with the Faceit profile')
     async def set_faceit_profile(self, ctx,
                                  faceit_link: str,
                                  command_user: Member = SlashOption(description="Choose user from the server",
@@ -62,8 +63,12 @@ class FaceitManager(Cog):
         try:
             response = requests.get(request_url, headers=headers, params=params).json()
             player_id = response['player_id']
-            faceit_elo = response.get('games', {}).get('cs2', {}).get('faceit_elo',response.get('games', {}).get('csgo', {}).get('faceit_elo'))
-            faceit_lvl = response.get('games', {}).get('cs2', {}).get('skill_level',response.get('games', {}).get('csgo', {}).get('skill_level'))
+            faceit_elo = response.get('games', {}).get('cs2', {}).get('faceit_elo',
+                                                                      response.get('games', {}).get('csgo', {}).get(
+                                                                          'faceit_elo'))
+            faceit_lvl = response.get('games', {}).get('cs2', {}).get('skill_level',
+                                                                      response.get('games', {}).get('csgo', {}).get(
+                                                                          'skill_level'))
             faceit_profile_link = response['faceit_url'].replace('{lang}', 'en')
         except Exception:
             return await ctx.send('Something went wrong...')
@@ -90,6 +95,26 @@ class FaceitManager(Cog):
                     await discord_user.remove_roles(role)
                     logger.info(f'Removed role {role} from user {user.username}')
 
+    @nextcord.slash_command(name='get_faceit_profiles', description='Information about available files of logs')
+    async def get_faceit_profile(self, ctx):
+        await self.bot.wait_until_ready()
+        self.ctx = ctx
+
+        # ctx.user.id != ctx.guild.owner_id - check if the user is not the owner of the server
+        if not ctx.permissions.administrator:  # check if the user is not administator
+            return await ctx.send('You are not allowed to set faceit profile for other users')
+
+        users_with_faceit_link = session.query(UserModel).filter(UserModel.faceit_player_id.isnot(None)).all()
+
+        embed = Embed(title=f'List of users with a Faceit account')
+        embed.add_field(name='User',
+                        value='\n'.join(user.username for user in users_with_faceit_link), inline=True)
+        embed.add_field(name='Faceit link',
+                        value='\n'.join(user.faceit_profile_link for user in users_with_faceit_link), inline=True)
+        try:
+            await ctx.send(embed=embed)
+        except Exception:
+            await ctx.send(f'**Users with Faceit:** {", ".join(user.username for user in users_with_faceit_link)}')
 
 
 def register_cog(bot: Bot) -> None:
