@@ -34,7 +34,8 @@ class FaceitManager(Cog):
                             description='Connect the Discord account with the Faceit profile')
     async def set_faceit_profile(self, ctx,
                                  faceit_link: str,
-                                 command_user: Member = SlashOption(description="Choose user from the server",required=False)):
+                                 command_user: Member = SlashOption(description="Choose user from the server",
+                                                                    required=False)):
         # Todo: Future: Remove the database requests for each user and use bulk requests instead
         # Todo: Future: Try to do the same for the discord requests (await discord.add_roles, await discord.remove_roles)
         await self.bot.wait_until_ready()
@@ -87,14 +88,16 @@ class FaceitManager(Cog):
         user.faceit_lvl = faceit_lvl
         user.faceit_profile_link = faceit_profile_link
         session.commit()
-        logger.info(f'[CMD] Faceit profile of user {user.username} - updated! ELO/LVL: {user.faceit_elo}/{user.faceit_lvl}')
+        logger.info(
+            f'[CMD] Faceit profile of user {user.username} - updated! ELO/LVL: {user.faceit_elo}/{user.faceit_lvl}')
 
         discord_user = self.bot.guilds[0].get_member(user.discord_id)
         if discord_user:
             required_role_obj, unwanted_roles_obj = await self.get_role_id_depending_on_the_faceit_lvl(user.faceit_lvl)
             await discord_user.add_roles(required_role_obj)
             logger.info(f'Role: {required_role_obj}; Added to user: {user.username}')
-            await ctx.send(f'**User:** {user.username}\n**Faceit lvl/elo:** {user.faceit_lvl}/{user.faceit_elo}\n**Role** - setted')
+            await ctx.send(
+                f'**User:** {user.username}\n**Faceit lvl/elo:** {user.faceit_lvl}/{user.faceit_elo}\n**Role** - setted')
             for role in unwanted_roles_obj:
                 if role in discord_user.roles:
                     await discord_user.remove_roles(role)

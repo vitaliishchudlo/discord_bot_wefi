@@ -67,8 +67,7 @@ class FaceitLvlTracker(Cog):
                     f'[TASK] Faceit profile of user {user.username} - updated! ELO/LVL: {user.faceit_elo}/{user.faceit_lvl}')
                 discord_user = self.bot.guilds[0].get_member(user.discord_id)
                 if discord_user:
-                    required_role_obj, unwanted_roles_obj = await self.get_role_id_depending_on_the_faceit_lvl(
-                        user.faceit_lvl)
+                    required_role_obj, unwanted_roles_obj = await self.get_role_id_depending_on_the_faceit_lvl(user.faceit_lvl)
                     await discord_user.add_roles(required_role_obj)
                     logger.info(f'[TASK] Role: {required_role_obj}; Added to user: {user.username}')
                     for role in unwanted_roles_obj:
