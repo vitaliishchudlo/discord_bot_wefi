@@ -45,8 +45,8 @@ class FaceitLvlTracker(Cog):
                     response = requests.get(request_url, headers=headers)
                     if response.status_code == 200:
                         faceit_statistics_result.append(response.json())
-                except Exception:
-                    pass
+                except Exception as err:
+                    logger.error(f'[TASK] Something went wrong with request to Faceit servers...\n{err}')
 
             for player in faceit_statistics_result:
                 user = session.query(UserModel).filter_by(faceit_player_id=player['player_id']).first()
@@ -60,20 +60,20 @@ class FaceitLvlTracker(Cog):
                                                                                  'skill_level'))
                 user.faceit_profile_link = player['faceit_url'].replace('{lang}', 'en')
                 session.commit()
-                logger.info(f'[TASK] Updating faceit elo for user {user.username} - {user.faceit_elo}/{user.faceit_lvl} lvl')
+                logger.info(f'[TASK] Faceit profile of user {user.username} - updated! ELO/LVL: {user.faceit_elo}/{user.faceit_lvl}')
 
                 discord_user = self.bot.guilds[0].get_member(user.discord_id)
                 if discord_user:
                     required_role_obj, unwanted_roles_obj = await self.get_role_id_depending_on_the_faceit_lvl(
                         user.faceit_lvl)
                     await discord_user.add_roles(required_role_obj)
-                    logger.info(f'[TASK] Added role {required_role_obj} to user {user.username}')
+                    logger.info(f'[TASK] Role: {required_role_obj}; Added to user: {user.username}')
                     for role in unwanted_roles_obj:
                         if role in discord_user.roles:
                             await discord_user.remove_roles(role)
-                            logger.info(f'[TASK] Removed role {role} from user {user.username}')
+                            logger.info(f'[TASK] Role: {role}; Removed from user {user.username}')
         except Exception as err:
-            print(f'Error in faceit_lvl_check task: {err}')
+            print(f'[TASK] Error in faceit_lvl_check task: {err}')
             logger.error(f'[TASK] Error in faceit_lvl_check task: {err}')
 
 

@@ -61,7 +61,10 @@ class FaceitManager(Cog):
         }
 
         try:
-            response = requests.get(request_url, headers=headers, params=params).json()
+            response = requests.get(request_url, headers=headers, params=params)
+            if response.status_code == 200:
+                response = response.json()
+
             player_id = response['player_id']
             faceit_elo = response.get('games', {}).get('cs2', {}).get('faceit_elo',
                                                                       response.get('games', {}).get('csgo', {}).get(
@@ -70,8 +73,9 @@ class FaceitManager(Cog):
                                                                       response.get('games', {}).get('csgo', {}).get(
                                                                           'skill_level'))
             faceit_profile_link = response['faceit_url'].replace('{lang}', 'en')
-        except Exception:
-            return await ctx.send('Something went wrong...')
+        except Exception as err:
+            logger.error(f'[CMD] Something went wrong with request to Faceit servers...\n{err}')
+            return await ctx.send(f'[CMD] Something went wrong with Faceit servers...\n{err}')
 
         if command_user:
             user = session.query(UserModel).filter_by(discord_id=command_user.id).first()
@@ -82,18 +86,18 @@ class FaceitManager(Cog):
         user.faceit_lvl = faceit_lvl
         user.faceit_profile_link = faceit_profile_link
         session.commit()
-        logger.info(f'Updating faceit elo for user {user.username} - {user.faceit_elo}/{user.faceit_lvl} lvl')
+        logger.info(f'[CMD] Faceit profile of user {user.username} - updated! ELO/LVL: {user.faceit_elo}/{user.faceit_lvl}')
 
         discord_user = self.bot.guilds[0].get_member(user.discord_id)
         if discord_user:
             required_role_obj, unwanted_roles_obj = await self.get_role_id_depending_on_the_faceit_lvl(user.faceit_lvl)
             await discord_user.add_roles(required_role_obj)
-            logger.info(f'Added role {required_role_obj} to user {user.username}')
-            await ctx.send(f'User: {user.username}\nFaceit lvl/elo: {user.faceit_lvl}/{user.faceit_elo}\nRole - added')
+            logger.info(f'Role: {required_role_obj}; Added to user: {user.username}')
+            await ctx.send(f'**User:** {user.username}\n**Faceit lvl/elo:** {user.faceit_lvl}/{user.faceit_elo}\n**Role** - setted')
             for role in unwanted_roles_obj:
                 if role in discord_user.roles:
                     await discord_user.remove_roles(role)
-                    logger.info(f'Removed role {role} from user {user.username}')
+                    logger.info(f'Role: {role}; Removed from user {user.username}')
 
     @nextcord.slash_command(name='get_faceit_profiles', description='Get the list of users with a Faceit account')
     async def get_faceit_profile(self, ctx):
