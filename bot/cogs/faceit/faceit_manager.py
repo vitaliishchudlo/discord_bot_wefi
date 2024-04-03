@@ -95,7 +95,7 @@ class FaceitManager(Cog):
                     await discord_user.remove_roles(role)
                     logger.info(f'Removed role {role} from user {user.username}')
 
-    @nextcord.slash_command(name='get_faceit_profiles', description='Information about available files of logs')
+    @nextcord.slash_command(name='get_faceit_profiles', description='Get the list of users with a Faceit account')
     async def get_faceit_profile(self, ctx):
         await self.bot.wait_until_ready()
         self.ctx = ctx
