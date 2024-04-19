@@ -50,7 +50,8 @@ class FaceitLvlTracker(Cog):
                         faceit_statistics_result.append(response.json())
                 except Exception as err:
                     logger.error(f'[TASK] Something went wrong with request to Faceit servers...\n{err}')
-
+            
+            logger.info(f'[TASK] Started updating FaceIT statistics')
             for player in faceit_statistics_result:
                 user = session.query(UserModel).filter_by(faceit_player_id=player['player_id']).first()
                 user.faceit_elo = player.get('games', {}).get('cs2', {}).get('faceit_elo',
@@ -74,6 +75,7 @@ class FaceitLvlTracker(Cog):
                         if role in discord_user.roles:
                             await discord_user.remove_roles(role)
                             logger.info(f'[TASK] Role: {role}; Removed from user {user.username}')
+	   logger.info(f'[TASK] Finished  updating FaceIT  statistics')	    
         except Exception as err:
             print(f'[TASK] Error in faceit_lvl_check task: {err}')
             logger.error(f'[TASK] Error in faceit_lvl_check task: {err}')
