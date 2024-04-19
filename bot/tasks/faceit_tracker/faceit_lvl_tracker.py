@@ -75,7 +75,8 @@ class FaceitLvlTracker(Cog):
                         if role in discord_user.roles:
                             await discord_user.remove_roles(role)
                             logger.info(f'[TASK] Role: {role}; Removed from user {user.username}')
-	   logger.info(f'[TASK] Finished  updating FaceIT  statistics')	    
+				
+            logger.info(f'[TASK] Finished  updating FaceIT  statistics')	    
         except Exception as err:
             print(f'[TASK] Error in faceit_lvl_check task: {err}')
             logger.error(f'[TASK] Error in faceit_lvl_check task: {err}')
