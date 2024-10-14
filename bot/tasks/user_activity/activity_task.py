@@ -124,8 +124,8 @@ class UserActivityTask(Cog):
                     self.report_color = Color.teal().blue()
 
                 embed = Embed(
-                    title=f"Activity report for {datetime.strftime(self.date_for_report, '%d/%m/%Y')}",
-                    description='This report shows activity in voice channels.', color=self.report_color)
+                    title=f"Daily activity report for {datetime.strftime(self.date_for_report, '%d/%m/%Y')}",
+                    description='This report shows users voice channel activity for the day', color=self.report_color)
                 embed.add_field(name='User', value='\n'.join(
                     users_names), inline=True)
                 embed.add_field(name='Minutes', value='\n'.join(
